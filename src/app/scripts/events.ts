@@ -233,8 +233,6 @@ export class DiagramClientSideEvents {
         }
     }
 
-   
-
     public dragEnter(args: IDragEnterEventArgs): void {
         let obj: NodeModel = args.element as NodeModel;
         

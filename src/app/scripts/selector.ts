@@ -8,6 +8,7 @@ import {
 import { UtilityMethods } from "./utilitymethods";
 import { isNullOrUndefined } from "@syncfusion/ej2-base";
 import { ToolbarComponent } from "@syncfusion/ej2-vue-navigations";
+import { DialogComponent } from "@syncfusion/ej2-vue-popups";
 
 export class NodeProperties {
     private m_offsetX: number = 0;
@@ -722,6 +723,153 @@ export class OrgDataSettings {
   public fileformat = "";
   public extensionType = ".csv";
   public buttonContent = "Download Example CSV";
+}
+export class OrgChartData {
+  private selectedItem: SelectorViewModel
+
+  constructor(selectedItem1: SelectorViewModel) {
+      this.selectedItem = selectedItem1;
+  }
+  
+}
+export abstract class OrgChartUtilityMethods {
+
+  public static fileType: string;
+  public static uploadDialog: DialogComponent;
+  public static customPropertyDialog: DialogComponent | undefined;
+  public static isUploadSuccess: boolean;
+
+  public static selectedItem: SelectorViewModel;
+
+  public static columnsList: string[] = [];
+
+  public static orgDataSource: Object[] = [];
+
+  public static orgChart: OrgChartData;
+
+
+  public static readFile(event: ProgressEvent): void {
+      this.orgChart = new OrgChartData(this.selectedItem);
+      this.columnsList = [];
+      let resultString: string = (event.target as any).result.toString();
+      if (this.fileType === 'csv') {
+          this.orgDataSource = OrgChartUtilityMethods.convertCsvToJson(resultString);
+      } else if (this.fileType === 'json') {
+          this.orgDataSource = JSON.parse(resultString);
+          for (let i: number = 0; i < this.orgDataSource.length; i++) {
+              let attr: { [key: string]: Object } = this.orgDataSource[i] as { [key: string]: Object };
+              for (let prop in attr) {
+                  if (this.columnsList.indexOf(prop) === -1) {
+                      this.columnsList.push(prop);
+                  }
+              }
+          }
+      } else {
+          let parser: DOMParser = new DOMParser();
+          let xmlDom: XMLDocument = parser.parseFromString(resultString, 'text/xml');
+          let element: Element = xmlDom.children[0];
+          this.orgDataSource = this.convertXmlToJson(element);
+      }
+      let columns: { [key: string]: Object }[] = this.getDataSourceColumns();
+      this.selectedItem.orgDataSettings.dataSourceColumns = columns;
+  }
+
+  private static getDataSourceColumns(): { [key: string]: Object }[] {
+      let columns: { [key: string]: Object }[] = [];
+      for (let i: number = 0; i < this.columnsList.length; i++) {
+          if (this.columnsList[i]) {
+              columns.push({
+                  'text': this.columnsList[i], 'value': this.columnsList[i]
+              });
+          }
+      }
+      return columns;
+  }
+
+  public static convertCsvToJson(csvText: string): Object[] {
+      let allTextLines: string[] = csvText.split(/\r\n|\n/);
+      this.columnsList = allTextLines[0].split(',');
+      let lines: Object[] = [];
+      for (let i: number = 1; i < allTextLines.length; i++) {
+          if (allTextLines[i]) {
+              let data: string[] = allTextLines[i].split(',');
+              //if (data.length === headers.length) {
+              let tarr: { [key: string]: Object } = {};
+              for (let j: number = 0; j < this.columnsList.length; j++) {
+                  if (data[j].trim().startsWith('"') && !data[j].trim().endsWith('"')) {
+                      while (!data[j].trim().endsWith('"')) {
+                          data[j] = data[j] + ',' + data[j + 1];
+                          data.splice(j + 1, 1);
+                      }
+                  }
+                  tarr[this.columnsList[j]] = data[j];
+              }
+              lines.push(tarr);
+              //}
+          }
+      }
+      return lines;
+  }
+
+  public static convertXmlToJson(element: Element): Object[] {
+      let dataSource: Object[] = [];
+      for (let i: number = 0; i < element.children.length; i++) {
+          let childElement: Element = element.children[i] as Element;
+          let rowData: { [key: string]: Object } = this.generateRowData(childElement, dataSource.length.toString());
+          if (Object.keys(rowData).length > 0) {
+              dataSource.push(rowData);
+          }
+          if (childElement.children.length > 0) {
+              let key: string = 'id';
+              this.convertChildXmlToJson(childElement, rowData[key].toString(), dataSource);
+          }
+      }
+      return dataSource;
+  }
+
+  public static convertChildXmlToJson(element: Element, parentId: string, dataSource: Object[]): void {
+      for (let i: number = 0; i < element.children.length; i++) {
+          let childElement: Element = element.children[i] as Element;
+          let rowData: { [key: string]: Object } =
+              this.generateRowData(childElement, dataSource.length.toString(), parentId.toString());
+          if (Object.keys(rowData).length > 0) {
+              dataSource.push(rowData);
+          }
+          if (childElement.children.length > 0) {
+              let key: string = 'id';
+              this.convertChildXmlToJson(childElement, rowData[key].toString(), dataSource);
+          }
+      }
+  }
+
+  public static generateRowData(element: Element, id: string, parentId?: string): { [key: string]: Object } {
+    let rowData: { [key: string]: Object } = {};
+    for (let i = 0; i < element.attributes.length; i++) {
+      let attr: Attr = element.attributes[i];
+          rowData[attr.name] = attr.value;
+          if (this.columnsList.indexOf(attr.name) === -1) {
+              this.columnsList.push(attr.name);
+          }
+      }
+      let key: string = 'id';
+      rowData[key] = id;
+      if (parentId) {
+          key = 'parentId';
+          rowData[key] = parentId;
+      }
+      return rowData;
+  }
+
+  public static shortCutkeys: { [key: string]: Object }[] = [
+      { 'key': 'Tab', 'value': 'Add a child to parent' },
+      { 'key': 'Enter', 'value': 'Add a child to same level' },
+      { 'key': 'Shift + Tab', 'value': 'Move the child parent to next level' },
+      { 'key': 'Delete', 'value': 'Delete a child' },
+      { 'key': 'Spacebar', 'value': 'Expand/Collapse a shape' },
+      { 'key': 'F2', 'value': 'Edit a shape' },
+      { 'key': 'Esc', 'value': 'End Editing' },
+      { 'key': 'Arrow(Up, Down, Left, Right)', 'value': 'Navigate between child' },
+  ];
 }
 
 export class SelectorViewModel {
