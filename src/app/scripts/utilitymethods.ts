@@ -11,9 +11,6 @@ import { Dialog, DialogComponent } from '@syncfusion/ej2-vue-popups';
 import { Ajax } from '@syncfusion/ej2-base';
 import { Toolbar, ContextMenu, MenuItemModel, ToolbarComponent } from '@syncfusion/ej2-vue-navigations';
 
-
-
-
 export class PaperSize {
     public pageWidth: number = 0;
     public pageHeight: number = 0;
@@ -183,8 +180,6 @@ export class UtilityMethods {
         }
     }
 
-    
-
     public objectTypeChange(objectType: string): void {
         (document.getElementById('diagramPropertyContainer') as any).style.display = 'none';
         (document.getElementById('nodePropertyContainer') as any).style.display = 'none';
@@ -203,42 +198,6 @@ export class UtilityMethods {
         }
     }
 
-
-    
-
-    public flowChartImage: { [key: string]: string }[] = [
-        { source: "./assets/dbstyle/common_images/blank_diagram.svg", name: 'Blank Diagram', type: 'svg_blank' },
-        { source: './assets/dbstyle/flowchart_Images/Credit_Card_Processing.svg', name: 'Credit Card Processing', type: 'svg_image' },
-        { source: './assets/dbstyle/flowchart_Images/Bank_Teller_Flow.svg', name: 'Banking Teller Process Flow', type: 'svg_image' },
-        { source: './assets/dbstyle/flowchart_Images/Developer_Workflow.SVG', name: 'Agile"s Developer Workflow', type: 'svg_image' },
-    ];
-
-    public mindMapImage: { [key: string]: string }[] = [
-        { source: './assets/dbstyle/common_images/blank_diagram_mind.svg', name: 'Blank Diagram', type: 'svg_image' },
-        { source: './assets/dbstyle/mindmap_images/BusinessPlanning.SVG', name: 'Business Planning', type: 'svg_image' },
-        { source: './assets/dbstyle/mindmap_images/TQM.SVG', name: 'Quality Management', type: 'svg_image' },
-        { source: './assets/dbstyle/mindmap_images/SoftwareLifeCycle.SVG', name: 'Software Life Cycle', type: 'svg_image' },
-    ];
-
-    public orgChartImage: { [key: string]: string }[] = [
-        { source: './assets/dbstyle/common_images/blank_diagram_org.svg', name: 'Blank Diagram', type: 'svg_image' },
-        { source: './assets/dbstyle/orgchart_images/OrgRenderingStyle_1.svg', name: 'Org Template Style - 1', type: 'svg_image' },
-        { source: './assets/dbstyle/orgchart_images/OrgRenderingStyle_2.svg', name: 'Org Template Style - 2', type: 'svg_image' },
-        { source: './assets/dbstyle/orgchart_images/OrgRenderingStyle_3.svg', name: 'Org Template Style - 3', type: 'svg_image' },
-    ];
-
-    public bpmnImage: { [key: string]: string }[] = [
-        { source: './assets/dbstyle/common_images/blank_diagram.svg', name: 'Blank Diagram', type: 'svg_blank' },
-        { source: './assets/dbstyle/bpmn_images/Template1.png', name: 'BPMN Diagram 1' },
-        { source: './assets/dbstyle/bpmn_images/Template1.png', name: 'BPMN Diagram 2' },
-        { source: './assets/dbstyle/bpmn_images/Template1.png', name: 'BPMN Diagram 3' },
-    ];
-
- 
-
-   
-  
-    
     public enableToolbarItems(selectedItems: Object[]): void {
         let toolbarContainer: HTMLDivElement = document.getElementsByClassName('db-toolbar-container')[0] as HTMLDivElement;
         let toolbarClassName: string = 'db-toolbar-container';
@@ -328,11 +287,5 @@ export class UtilityMethods {
         }
         return paperSize;
     }
-    
-   
-
-
-   
-    
 
 }

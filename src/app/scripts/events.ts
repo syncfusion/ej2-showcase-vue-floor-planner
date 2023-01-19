@@ -24,7 +24,7 @@ export class DiagramClientSideEvents {
     private selectedItem: SelectorViewModel; 
     public diagram: DiagramComponent | undefined ;
     public toolbarEditor: ToolbarComponent | undefined;
-    public ddlTextPosition: DropDownListComponent | undefined;
+    public ddlTextPosition: DropDownListComponent ;
     constructor(selectedItem: SelectorViewModel) {
         this.selectedItem = selectedItem;
         
@@ -232,8 +232,6 @@ export class DiagramClientSideEvents {
             this.selectedItem.isModified = true;
         }
     }
-
-   
 
     public dragEnter(args: IDragEnterEventArgs): void {
         let obj: NodeModel = args.element as NodeModel;
@@ -448,7 +446,7 @@ export class DiagramClientSideEvents {
 export class DiagramPropertyBinding {
     public diagram:DiagramComponent;
     private selectedItem: SelectorViewModel;
-    
+    public ddlTextPosition: DropDownListComponent;
     constructor(selectedItem: SelectorViewModel, ) {
         this.selectedItem = selectedItem;
        

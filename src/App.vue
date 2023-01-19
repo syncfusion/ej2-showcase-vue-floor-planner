@@ -1,9 +1,11 @@
 <template>
 <div>
+  <div style="display :none"><input type="file" id="fileupload" name="UploadFiles"/></div>
   <ejs-contextmenu id='arrangeContextMenu'  :items='dropDownDataSources.arrangeMenuItems' :animationSettings='dialogAnimationSettings' :onOpen='arrangeContextMenuOpen'
      cssClass="arrangeMenu"  :beforeClose="arrangeMenuBeforeClose" v-on:select="menuClick($event)"
     >
 </ejs-contextmenu>
+
   <div class="diagrambuilder-container">
     <div class="header navbar">
       <div class="db-header-container">
@@ -209,7 +211,8 @@
               :pageSettings="pageSettings"
               :scrollSettings="scrollSettings"
               :rulerSettings="rulerSettings"
-              
+              :nodes="nodes"
+              :connectors="connectors"
               :getNodeDefaults="setNodeDefaults"
               :getConnectorDefaults="setConnectorDefaults"
               :selectionChange="this.diagramEvents.selectionChange.bind(this.diagramEvents)"
@@ -228,7 +231,7 @@
             <div id='diagramPropertyContainer' class="db-diagram-prop-container">
               <div class="row db-prop-header-text">
                 Page Settings
-                  <!-- <button class="close" v-on:click="this.selectedItem.utilityMethods.hideElements('hide-properties',diagram)"><i style="width: 20px;height: 20px;font-size:20px" class="sf-icon-close"></i></button> -->
+                  <ejs-button class="close" v-on:click.native="hideElements('hide-properties',diagram)"><i style="width: 20px;height: 20px;font-size:20px" class="sf-icon-close"></i></ejs-button>
               </div>
               <div class="db-prop-separator" style="background-color: #b5b5b5;margin-bottom: 10px;">
               </div>
@@ -320,7 +323,7 @@
               <div class="db-node-behaviour-prop" id="dimen">
                 <div class="row db-prop-header-text">
                   Properties
-                  <!-- <button class="close" onclick="UtilityMethods.prototype.hideElements('hide-properties',diagram)"><i style="width: 20px;height: 20px;font-size:20px" class="sf-icon-close"></i></button> -->
+                  <ejs-button class="close" v-on:click.native="hideElements('hide-properties',diagram)"><i style="width: 20px;height: 20px;font-size:20px" class="sf-icon-close"></i></ejs-button> 
                 </div>
                 <div class="db-prop-separator" style="background-color: #b5b5b5;margin-bottom: 10px;">
                 </div>
@@ -590,7 +593,7 @@
                   <div class="col-xs-4 db-col-right">
                     <div class="db-text-container">
                       <div class="db-text-input">
-                        <ejs-numerictextbox :min="1" :step="1"  v-model="selectedItem.textProperties.fontSize"></ejs-numerictextbox>
+                        <ejs-numerictextbox style="width: 75px;" id="fontSizeTextProperties" :min="1" :step="1"  v-model="selectedItem.textProperties.fontSize"></ejs-numerictextbox>
                       </div>
                     </div>
                   </div>
@@ -897,10 +900,13 @@ import {
   ComplexHierarchicalTree,
   RulerModel,
   RulerSettingsModel,
-  CommandModel
+  CommandModel,
+  Decorator,
+  DecoratorModel,
+  DecoratorShapes
 } from "@syncfusion/ej2-vue-diagrams";
 import { formatUnit, createElement, closest, Ajax } from "@syncfusion/ej2-base";
-import { UploaderComponent } from "@syncfusion/ej2-vue-inputs";
+import { Uploader, UploaderComponent } from "@syncfusion/ej2-vue-inputs";
 import {
   ItemModel as ToolbarItemModel,
   OpenCloseMenuEventArgs,
@@ -992,7 +998,7 @@ import { ListViewPlugin } from "@syncfusion/ej2-vue-lists";
 import { MultiSelectPlugin } from "@syncfusion/ej2-vue-dropdowns";
 import { UploaderPlugin } from "@syncfusion/ej2-vue-inputs";
 
-import { SelectorViewModel } from "./app/scripts/selector";
+import { OrgChartUtilityMethods, SelectorViewModel } from "./app/scripts/selector";
 import { DropDownDataSources } from "./app/scripts/dropdowndatasource";
 import { Palettes } from "./app/scripts/palettes";
 import {
@@ -1076,6 +1082,7 @@ export default class User extends Vue {
   public hyperlinkDialog: DialogComponent;
   public defaultupload: UploaderComponent;
   public ddlTextPosition: DropDownListComponent;
+  public fileUploadDialog: DialogComponent;
   public dlgTarget: HTMLElement = document.body;
   public dialogPosition: PositionDataModel = { X: 100, Y: 112 };
   public dialogVisibility = false;
@@ -1085,6 +1092,7 @@ export default class User extends Vue {
   public exportingButtons: any = this.getDialogButtons("export");
   public printingButtons: any = this.getDialogButtons("print");
   public hyperlinkButtons: any = this.getDialogButtons("hyperlink");
+  public uploadButtons: any = this.getUploadButtons();
   public isOpen: boolean;
   public path: Object = {
         saveUrl: "https://aspnetmvc.syncfusion.com/services/api/uploadbox/Save",
@@ -1115,6 +1123,8 @@ export default class User extends Vue {
     this.hyperlinkDialog = hyperlinkDialog.ej2_instances[0];
     let defaultupload: any = document.getElementById("defaultfileupload");
     this.defaultupload = defaultupload.ej2_instances[0];
+    let ddlTextPosition: any = document.getElementById("ddlTextPosition");
+    this.ddlTextPosition = ddlTextPosition.ej2_instances[0];
     this.generateDiagram();
     this.diagramEvents.ddlTextPosition = this.ddlTextPosition;
     document.onmouseover = this.menumouseover.bind(this);
@@ -1996,6 +2006,554 @@ export default class User extends Vue {
     style: { fontSize: 16  }
   },
 ]
+public connectors :ConnectorModel[] | any=[
+  {
+    id: "connector1",
+    style: {
+    strokeWidth: 5
+  },
+    sourcePoint: {
+        x: 20,
+        y: 10
+    },
+    targetPoint: {
+        x: 80,
+        y: 10
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector2",
+    style: {
+    strokeWidth: 5
+  },
+    sourcePoint: {
+        x: 160,
+        y: 10
+    },
+    targetPoint: {
+        x: 240,
+        y: 10
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector3",
+    style: {
+    strokeWidth: 5
+  },
+    sourcePoint: {
+        x: 20,
+        y: 10
+    },
+    targetPoint: {
+        x: 20,
+        y: 80
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector4",
+    style: {
+    strokeWidth: 5
+  },
+    sourcePoint: {
+        x: 240,
+        y: 10
+    },
+    targetPoint: {
+      x: 240,
+      y: 200
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector5",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 20,
+        y: 200
+    },
+    targetPoint: {
+        x: 155,
+        y: 200
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+
+  {
+    id: "connector7",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 185,
+        y: 280
+    },
+    targetPoint: {
+        x: 185,
+        y: 350
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector34",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 20,
+        y: 350
+    },
+    targetPoint: {
+        x: 155,
+        y: 350
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector8",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 185,
+        y: 200
+    },
+    targetPoint: {
+        x: 185,
+        y: 280
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector9",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 100,
+        y: 280
+    },
+    targetPoint: {
+        x: 185,
+        y: 280
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector10",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 20,
+        y: 200
+    },
+    targetPoint: {
+        x: 20,
+        y: 280
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector11",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 20,
+        y: 280
+    },
+    targetPoint: {
+        x:185,
+        y: 280
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector12",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 20,
+        y: 280
+    },
+    targetPoint: {
+        x: 20,
+        y: 370
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector36",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+      x: 20,
+      y: 420
+    },
+    targetPoint: {
+        x: 20,
+        y: 480
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector13",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 20,
+        y: 480
+    },
+    targetPoint: {
+        x: 80,
+        y: 480
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector14",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 160,
+        y: 480
+    },
+    targetPoint: {
+        x: 240,
+        y: 480
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector15",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 240,
+        y: 280
+    },
+    targetPoint: {
+        x: 240,
+        y: 540
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector16",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 240,
+        y: 400
+    },
+    targetPoint: {
+        x: 280,
+        y: 400
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector17",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 360,
+        y: 400
+    },
+    targetPoint: {
+        x: 440,
+        y: 400
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector18",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 540,
+        y: 400
+    },
+    targetPoint: {
+        x: 580,
+        y: 400
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector19",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 580,
+        y: 540
+    },
+    targetPoint: {
+        x: 580,
+        y: 280
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector20",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 500,
+        y: 10
+    },
+    targetPoint: {
+        x: 860,
+        y: 10
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector21",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 500,
+        y: 10
+    },
+    targetPoint: {
+        x: 500,
+        y: 140
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector24",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 580,
+        y:480
+    },
+    targetPoint: {
+        x: 700,
+        y: 480
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector25",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 780,
+        y:480
+    },
+    targetPoint: {
+        x: 860,
+        y: 480
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector26",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 860,
+        y:480
+    },
+    targetPoint: {
+        x: 860,
+        y: 10
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector27",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 780,
+        y:10
+    },
+    targetPoint: {
+        x: 780,
+        y: 100
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector28",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 630,
+        y:280
+    },
+    targetPoint: {
+        x: 830,
+        y: 280
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector29",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 660,
+        y:150
+    },
+    targetPoint: {
+        x: 860,
+        y: 150
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector30",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 760,
+        y:150
+    },
+    targetPoint: {
+        x: 760,
+        y: 280
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  
+  {
+    id: "connector32",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 240,
+        y:540
+    },
+    targetPoint: {
+        x: 580,
+        y: 540
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector35",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 20,
+        y:140
+    },
+    targetPoint: {
+        x: 20,
+        y: 200
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+  {
+    id: "connector37",
+    style: {
+    strokeWidth: 4
+  },
+    sourcePoint: {
+        x: 660,
+        y:150
+    },
+    targetPoint: {
+        x: 660,
+        y: 250
+    },
+    targetDecorator: {
+      shape: 'none',
+    }
+  },
+]
  public itemTemplate()
   {
     return {template: itemVue};
@@ -2270,7 +2828,8 @@ private buttonInstance: any;
             }
         }
     }
-    public aspectClick(selectedItem:SelectorViewModel){
+    public aspectClick(){
+      
         var isAspect = true;
      let   aspectRatioBtn = (document.getElementById('aspectRatioBtn') as any).ej2_instances[0];
     if((document.getElementById('aspectRatioBtn') as any).classList.contains('e-active'))
@@ -2285,7 +2844,7 @@ private buttonInstance: any;
         isAspect = true;
         aspectRatioBtn.iconCss = 'sf-icon-lock';
     }
-        selectedItem.nodePropertyChange({propertyName: 'aspectRatio', propertyValue: isAspect}); 
+        this.selectedItem.nodePropertyChange({propertyName: 'aspectRatio', propertyValue: isAspect}); 
     };
 
 
@@ -2307,8 +2866,8 @@ private buttonInstance: any;
           this.exportDialog.show();
           break;
     case 'open':
-            (document.getElementsByClassName("e-file-select-wrap") as any)[0].querySelector("button").click();
-            break;
+          this.openUploadBox(true, ".json");
+           break;
     case 'print':
           this.printDialog.show();
           break;
@@ -2423,36 +2982,6 @@ private buttonInstance: any;
         .children[0] as HTMLButtonElement
     ).click();
   }
-//   public onUploadSuccess(args: { [key: string]: Object }): void {
-//         (document.getElementsByClassName("sb-content-overlay")[0] as HTMLDivElement).style.display = "none";
-//         if (args.operation !== "remove") {
-//             let file1: { [key: string]: Object } = args.file as { [key: string]: Object };
-//             let file: Blob = file1.rawFile as Blob;
-//             OrgChartUtilityMethods.fileType = file1.type.toString();
-//             let reader: FileReader = new FileReader();
-//             if (OrgChartUtilityMethods.fileType.toLowerCase() === "jpg" || OrgChartUtilityMethods.fileType.toLowerCase() === "png") {
-//                 reader.readAsDataURL(file);
-//                 reader.onloadend = this.setImage.bind(this);
-//             } else {
-//                 reader.readAsText(file);
-//                 if (OrgChartUtilityMethods.fileType === "json" && CommonKeyboardCommands.isOpen) {
-//                     reader.onloadend = this.loadDiagram.bind(this);
-//                 } else {
-//                     OrgChartUtilityMethods.isUploadSuccess = true;
-//                     reader.onloadend = OrgChartUtilityMethods.readFile.bind(OrgChartUtilityMethods);
-//                 }
-//             }
-//             CommonKeyboardCommands.isOpen = false;
-//         }
-//     }
-// public onUploadFailure(args: { [key: string]: Object }): void {
-//         (document.getElementsByClassName("sb-content-overlay")[0] as HTMLDivElement).style.display = "none";
-//     }
-
-//     public onUploadFileSelected(args: { [key: string]: Object }): void {
-//         (document.getElementsByClassName("sb-content-overlay")[0] as HTMLDivElement).style.display = "";
-//     }
-
   public updateSelection(item:any){
         for(let i:number=0;i<item.parentObj.items.length;i++)
         {
@@ -2494,7 +3023,7 @@ private generateDiagram(): void {
     return true;
   }
   public toolbarEditorClick(args: ClickEventArgs): void {
-        
+        let diagram :Diagram = (document.getElementById("diagram") as any).ej2_instances[0];
         let commandType:string = (args.item.tooltipText as any).replace(/[' ']/g, '').toLowerCase();
         switch (commandType) {
             case 'new':
@@ -2507,7 +3036,7 @@ private generateDiagram(): void {
             this.diagram.redo();
             break;
         case 'open':
-            (document.getElementsByClassName('e-file-select-wrap') as any)[0].querySelector('button').click();
+            this.openUploadBox(true, ".json");
             break;
         case 'zoomin(ctrl++)':
             this.diagram.zoomTo({ type: 'ZoomIn', zoomFactor: 0.2 });
@@ -2601,10 +3130,10 @@ private generateDiagram(): void {
               this.diagram.distribute('BottomToTop');
               break;
         case 'horizontalflip':
-              (this.diagram as any).selectedItems.nodes[0].flip  = 'Horizontal' 
+               this.flipObjects(commandType,diagram);    
               break;
         case 'verticalflip':
-              (this.diagram as any).selectedItems.nodes[0].flip  = 'Verticl'
+               this.flipObjects(commandType,diagram);    
               break;
         case 'texttool':
               (this.diagram as any).drawingObject = { shape: { type: "Text" }, style: { strokeColor: "none", fill: "none" } };
@@ -2623,6 +3152,7 @@ private generateDiagram(): void {
       }
     }
   }
+  
   public removeSelectedToolbarItem(): void {
         for (let i: number = 0; i < (this.toolbarEditor as any).items.length; i++) {
             let item: any = (this.toolbarEditor as any).items[i];
@@ -2632,6 +3162,49 @@ private generateDiagram(): void {
         }
         this.toolbarEditor.dataBind();
     }
+        public flipObjects(flipType:string,diagram:Diagram){
+        var selectedObjects = (diagram as any).selectedItems.nodes.concat(diagram.selectedItems.connectors);
+        for(let i:number = 0;i<selectedObjects.length;i++)
+        {
+           selectedObjects[i].flip = flipType === 'Flip Horizontal'? 'Horizontal':'Vertical';
+        }
+        diagram.dataBind();
+      };
+    public onUploadSuccess(args: { [key: string]: Object }): void {
+        // (document.getElementsByClassName("sb-content-overlay")[0] as HTMLDivElement).style.display = "none";
+        if (args.operation !== "remove") {
+            let file1: { [key: string]: Object } = args.file as { [key: string]: Object };
+            let file: Blob = file1.rawFile as Blob;
+            let fileType = file1.type.toString();
+            let reader: FileReader = new FileReader();
+            if (fileType.toLowerCase() === "jpg" || fileType.toLowerCase() === "png") {
+                reader.readAsDataURL(file);
+                reader.onloadend = this.setImage.bind(this);
+            } else {
+                reader.readAsText(file);
+                if (fileType === "json") {
+                    reader.onloadend = this.loadDiagram.bind(this);
+                } 
+            }
+           this.isOpen = false;
+        }
+    }
+     public loadDiagram(event: ProgressEvent): void {
+        (this.diagram as any).loadDiagram(((event.target as FileReader) as any).result.toString());
+    }
+     public setImage(event: ProgressEvent): void {
+        
+        let node: NodeModel = (this.selectedItem.diagram as any).selectedItems.nodes[0];
+        node.shape = { type: "Image", source: (event.target as FileReader).result as string, align: "None" };
+    }
+public onUploadFailure(args: { [key: string]: Object }): void {
+        // (document.getElementsByClassName("sb-content-overlay")[0] as HTMLDivElement).style.display = "none";
+    }
+
+    public onUploadFileSelected(args: { [key: string]: Object }): void {
+        // (document.getElementsByClassName("sb-content-overlay")[0] as HTMLDivElement).style.display = "";
+    }
+
     public toolbarInsertClick(args: ClickEventArgs): void {
         
         let diagram: any = this.selectedItem.diagram;
@@ -2701,6 +3274,57 @@ private generateDiagram(): void {
     });
     return buttons;
   }
+   public getUploadButtons(): any {
+        let buttons: any = [];
+        buttons.push({
+            click: this.btnCancelClick.bind(this), buttonModel: { content: "Cancel", cssClass: "e-flat", isPrimary: true }
+        });
+        buttons.push({
+            click: this.btnUploadNext.bind(this), buttonModel: { content: "Next", cssClass: "e-flat e-db-primary", isPrimary: true },
+        });
+        return buttons;
+    }
+     private btnUploadNext(args:MouseEvent): void {
+        const target: any = args.target;
+        const buttonInstance: any = target.ej2_instances[0];
+        const uploadDialogContent: any = document.getElementById('uploadDialogContent');
+        if (OrgChartUtilityMethods.isUploadSuccess) {
+            if (uploadDialogContent.className === 'db-upload-content firstPage') {
+                if (OrgChartUtilityMethods.fileType === 'xml') {
+                    (this.fileUploadDialog as any).header = ' Define Employee Information';
+                    uploadDialogContent.className = 'db-upload-content thirdPage';
+                    buttonInstance.content = 'Finish';
+                } else {
+                  (this.fileUploadDialog as any).header = ' Define Employee - Supervisor Relationship';
+                    uploadDialogContent.className = 'db-upload-content secondPage';
+                }
+            } else if (uploadDialogContent.className === 'db-upload-content secondPage') {
+                const id: string = this.selectedItem.orgDataSettings.id;
+                const parent: string = this.selectedItem.orgDataSettings.parent;
+                if (id && parent) {
+                    
+                  
+                        (this.fileUploadDialog as any).header = ' Define Employee Information';
+                        uploadDialogContent.className = 'db-upload-content thirdPage';
+                        buttonInstance.content = 'Finish';
+                    }
+                else {
+                    alert('EmployeeId and SupervisorId can"t be empty');
+                }
+
+            } else {
+                const nameField: string = this.selectedItem.orgDataSettings.nameField;
+                if (nameField) {
+                    uploadDialogContent.className = 'db-upload-content firstPage';
+                    buttonInstance.content = 'Next';
+                    
+                    this.defaultupload.clearAll();
+                } else {
+                    alert('Name field can"t be empty');
+                }
+            }
+        }
+    }
   private btnExportClick(): void {
         let diagram: Diagram = this.selectedItem.diagram as Diagram ;
         diagram.exportDiagram({
@@ -2754,13 +3378,14 @@ private generateDiagram(): void {
             this.hyperlinkDialog.hide();
             break;
             
-            // case "fileUploadDialog":
-            //     this.fileUploadDialog.hide();
-            //     OrgChartUtilityMethods.isUploadSuccess = false;
-            //     break;
+            case "fileUploadDialog":
+                this.fileUploadDialog.hide();
+                OrgChartUtilityMethods.isUploadSuccess = false;
+                break;
             
         }
     }
+    
     private btnHyperLink(): void {
         let node: Node = ((this.selectedItem as any).diagram ).selectedItems.nodes[0] as Node;
         if (node.annotations.length > 0) {
@@ -2809,7 +3434,22 @@ private generateDiagram(): void {
         }
         diagram.dataBind();
     }
-
+public hideElements(): void {
+        var diagramContainer = document.getElementsByClassName('diagrambuilder-container')[0];
+        if (diagramContainer.classList.contains('hide-properties')) {
+                diagramContainer.classList.remove('hide-properties');
+                (document.getElementById('hideProperty') as HTMLButtonElement).style.backgroundColor = ''
+                // (document.getElementById('hideProperty') as any).ej2_instances[0].isPrimary = true;
+        }
+        else {
+            diagramContainer.classList.add('hide-properties');
+            (document.getElementById('hideProperty') as any).style.backgroundColor = '#e3e3e3'
+            // hidePropertyBtn.isPrimary = false;
+        }
+        if (this.diagram) {
+            this.diagram.updateViewPort();
+        }
+    };
 }
 
 </script>
