@@ -3175,26 +3175,22 @@ private generateDiagram(): void {
         if (args.operation !== "remove") {
             let file1: { [key: string]: Object } = args.file as { [key: string]: Object };
             let file: Blob = file1.rawFile as Blob;
-            OrgChartUtilityMethods.fileType = file1.type.toString();
+            let fileType = file1.type.toString();
             let reader: FileReader = new FileReader();
-            if (OrgChartUtilityMethods.fileType.toLowerCase() === "jpg" || OrgChartUtilityMethods.fileType.toLowerCase() === "png") {
+            if (fileType.toLowerCase() === "jpg" || fileType.toLowerCase() === "png") {
                 reader.readAsDataURL(file);
                 reader.onloadend = this.setImage.bind(this);
             } else {
                 reader.readAsText(file);
-                if (OrgChartUtilityMethods.fileType === "json" && this.isOpen) {
+                if (fileType === "json") {
                     reader.onloadend = this.loadDiagram.bind(this);
-                } else {
-                    OrgChartUtilityMethods.isUploadSuccess = true;
-                    reader.onloadend = OrgChartUtilityMethods.readFile.bind(OrgChartUtilityMethods);
-                }
+                } 
             }
            this.isOpen = false;
         }
     }
      public loadDiagram(event: ProgressEvent): void {
-        (this.diagram as any).loadPage(((event.target as FileReader) as any).result.toString());
-        this.fileUploadDialog.hide();
+        (this.diagram as any).loadDiagram(((event.target as FileReader) as any).result.toString());
     }
      public setImage(event: ProgressEvent): void {
         

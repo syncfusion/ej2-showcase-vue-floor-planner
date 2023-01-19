@@ -748,43 +748,8 @@ export abstract class OrgChartUtilityMethods {
   public static orgChart: OrgChartData;
 
 
-  public static readFile(event: ProgressEvent): void {
-      this.orgChart = new OrgChartData(this.selectedItem);
-      this.columnsList = [];
-      let resultString: string = (event.target as any).result.toString();
-      if (this.fileType === 'csv') {
-          this.orgDataSource = OrgChartUtilityMethods.convertCsvToJson(resultString);
-      } else if (this.fileType === 'json') {
-          this.orgDataSource = JSON.parse(resultString);
-          for (let i: number = 0; i < this.orgDataSource.length; i++) {
-              let attr: { [key: string]: Object } = this.orgDataSource[i] as { [key: string]: Object };
-              for (let prop in attr) {
-                  if (this.columnsList.indexOf(prop) === -1) {
-                      this.columnsList.push(prop);
-                  }
-              }
-          }
-      } else {
-          let parser: DOMParser = new DOMParser();
-          let xmlDom: XMLDocument = parser.parseFromString(resultString, 'text/xml');
-          let element: Element = xmlDom.children[0];
-          this.orgDataSource = this.convertXmlToJson(element);
-      }
-      let columns: { [key: string]: Object }[] = this.getDataSourceColumns();
-      this.selectedItem.orgDataSettings.dataSourceColumns = columns;
-  }
+ 
 
-  private static getDataSourceColumns(): { [key: string]: Object }[] {
-      let columns: { [key: string]: Object }[] = [];
-      for (let i: number = 0; i < this.columnsList.length; i++) {
-          if (this.columnsList[i]) {
-              columns.push({
-                  'text': this.columnsList[i], 'value': this.columnsList[i]
-              });
-          }
-      }
-      return columns;
-  }
 
   public static convertCsvToJson(csvText: string): Object[] {
       let allTextLines: string[] = csvText.split(/\r\n|\n/);
