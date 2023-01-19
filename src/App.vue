@@ -1,9 +1,11 @@
 <template>
 <div>
+  <div style="display :none"><input type="file" id="fileupload" name="UploadFiles"/></div>
   <ejs-contextmenu id='arrangeContextMenu'  :items='dropDownDataSources.arrangeMenuItems' :animationSettings='dialogAnimationSettings' :onOpen='arrangeContextMenuOpen'
      cssClass="arrangeMenu"  :beforeClose="arrangeMenuBeforeClose" v-on:select="menuClick($event)"
     >
 </ejs-contextmenu>
+
   <div class="diagrambuilder-container">
     <div class="header navbar">
       <div class="db-header-container">
@@ -1121,6 +1123,8 @@ export default class User extends Vue {
     this.hyperlinkDialog = hyperlinkDialog.ej2_instances[0];
     let defaultupload: any = document.getElementById("defaultfileupload");
     this.defaultupload = defaultupload.ej2_instances[0];
+    let ddlTextPosition: any = document.getElementById("ddlTextPosition");
+    this.ddlTextPosition = ddlTextPosition.ej2_instances[0];
     this.generateDiagram();
     this.diagramEvents.ddlTextPosition = this.ddlTextPosition;
     document.onmouseover = this.menumouseover.bind(this);
@@ -2862,7 +2866,8 @@ private buttonInstance: any;
           this.exportDialog.show();
           break;
     case 'open':
-           this.openUploadBox(true, ".json");
+          this.openUploadBox(true, ".json");
+           break;
     case 'print':
           this.printDialog.show();
           break;
@@ -2977,8 +2982,6 @@ private buttonInstance: any;
         .children[0] as HTMLButtonElement
     ).click();
   }
-
-
   public updateSelection(item:any){
         for(let i:number=0;i<item.parentObj.items.length;i++)
         {

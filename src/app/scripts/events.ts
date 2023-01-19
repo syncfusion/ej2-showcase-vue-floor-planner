@@ -24,7 +24,7 @@ export class DiagramClientSideEvents {
     private selectedItem: SelectorViewModel; 
     public diagram: DiagramComponent | undefined ;
     public toolbarEditor: ToolbarComponent | undefined;
-    public ddlTextPosition: DropDownListComponent | undefined;
+    public ddlTextPosition: DropDownListComponent ;
     constructor(selectedItem: SelectorViewModel) {
         this.selectedItem = selectedItem;
         
@@ -446,7 +446,7 @@ export class DiagramClientSideEvents {
 export class DiagramPropertyBinding {
     public diagram:DiagramComponent;
     private selectedItem: SelectorViewModel;
-    
+    public ddlTextPosition: DropDownListComponent;
     constructor(selectedItem: SelectorViewModel, ) {
         this.selectedItem = selectedItem;
        

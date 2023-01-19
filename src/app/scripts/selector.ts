@@ -727,8 +727,8 @@ export class OrgDataSettings {
 export class OrgChartData {
   private selectedItem: SelectorViewModel
 
-  constructor(selectedItem1: SelectorViewModel) {
-      this.selectedItem = selectedItem1;
+  constructor(selectedItem: SelectorViewModel) {
+      this.selectedItem = selectedItem;
   }
   
 }
