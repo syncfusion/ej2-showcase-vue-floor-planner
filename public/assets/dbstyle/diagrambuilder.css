@@ -650,10 +650,9 @@ input, button, select, textarea {
 .e-toolbar .e-toolbar-items .e-toolbar-item .e-tbar-btn.e-btn,
 .e-toolbar .e-toolbar-items .e-toolbar-item .e-dropdown-btn.e-btn {
     height: 100%;
-    margin: -2px 0px 6px 0px;
+    margin: 0px 0px 6px;
     /* background: #ffffff;*/
     background: transparent;
-    padding: 0px 0px 5px 0px;
 }
 
 .e-toolbar .e-toolbar-items .e-toolbar-item .e-tbar-btn.e-btn {

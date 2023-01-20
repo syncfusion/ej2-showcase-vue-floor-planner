@@ -5,7 +5,6 @@
      cssClass="arrangeMenu"  :beforeClose="arrangeMenuBeforeClose" v-on:select="menuClick($event)"
     >
 </ejs-contextmenu>
-
   <div class="diagrambuilder-container">
     <div class="header navbar">
       <div class="db-header-container">
@@ -3166,9 +3165,10 @@ private generateDiagram(): void {
         var selectedObjects = (diagram as any).selectedItems.nodes.concat(diagram.selectedItems.connectors);
         for(let i:number = 0;i<selectedObjects.length;i++)
         {
-           selectedObjects[i].flip = flipType === 'Flip Horizontal'? 'Horizontal':'Vertical';
+           selectedObjects[i].flip = flipType === 'horizontalflip'? 'Horizontal':'Vertical';
         }
         diagram.dataBind();
+  
       };
     public onUploadSuccess(args: { [key: string]: Object }): void {
         // (document.getElementsByClassName("sb-content-overlay")[0] as HTMLDivElement).style.display = "none";
