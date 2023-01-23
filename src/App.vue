@@ -422,13 +422,13 @@
                 </div>
                 <div class="row db-prop-row">
                   <div class="col-xs-6 db-col-left">
-                    <ejs-button style="font-size: 10px;"
+                    <ejs-button style="font-size: 10px; "
                     id="insertlink"
                     iconCss= 'sf-icon-insert_link' tooltipText='Insert Link' cssClass= 'e-outline' isPrimary=true v-on:click.native="toolbarInsertClick($event)"
                     >Insert link</ejs-button>
                   </div>
                   <div class="col-xs-6 db-col-left">
-                    <ejs-button style="font-size: 10px;margin-left: 5px;"
+                    <ejs-button style="font-size: 10px;margin-left: 5px;width:110px;padding-left:3px"
                     id="insertimage" iconCss= 'sf-icon-insert_image' tooltipText='Insert Image' cssClass= 'e-outline' isPrimary=true v-on:click.native="toolbarInsertClick($event)">Insert image</ejs-button>
                   </div>
                 </div>
@@ -592,17 +592,17 @@
                   <div class="col-xs-4 db-col-right">
                     <div class="db-text-container">
                       <div class="db-text-input">
-                        <ejs-numerictextbox style="width: 75px;" id="fontSizeTextProperties" :min="1" :step="1"  v-model="selectedItem.textProperties.fontSize"></ejs-numerictextbox>
+                        <ejs-numerictextbox style="width: 73px;" id="fontSizeTextProperties" :min="1" :step="1"  v-model="selectedItem.textProperties.fontSize"></ejs-numerictextbox>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="row db-prop-row">
-                  <div class="col-xs-6 db-col-left" id="textPositionDiv" style="width:120px">
+                  <div class="col-xs-6 db-col-left" id="textPositionDiv" style="width:148px;">
                     <ejs-dropdownlist id="ddlTextPosition" index=0 :dataSource="selectedItem.textProperties.textPositionDataSource" :value="selectedItem.textProperties.textPosition"
                                     :fields="dropdownListFields" v-on:change="diagramPropertyBinding.textPositionChange($event)" ></ejs-dropdownlist>
                   </div>
-                  <div class="col-xs-4 db-col-right" id="textColorDiv" style="width: 95px;margin-left:4px">
+                  <div class="col-xs-6 db-col-right" id="textColorDiv" style="width: 70px;margin-left:4px">
                     <div class="db-color-container">
                       <div class="db-color-input">
                         <ejs-colorpicker
@@ -709,10 +709,10 @@
                   </ejs-toolbar>
                 </div>
               <div class="row db-prop-row">
-                <div class="col-xs-2 db-col-right db-prop-text-style" style="margin-right: 3px;padding-top: 6px">
+                <div class="col-xs-2 db-col-right db-prop-text-style" style="margin-right:12px;padding-top: 6px">
                   <span class="db-prop-text-style">Opacity</span>
                 </div>
-                <div class="col-xs-8 db-col-left" style="width: 120px;padding-right: 10px;margin-left: 5px;">
+                <div class="col-xs-8 db-col-left" style="width: 130px;padding-right: 10px;margin-left: 5px;">
                   <ejs-slider
                     id='opacityTextSlider'
                     min="0"
@@ -722,7 +722,7 @@
                     v-model="selectedItem.textProperties.opacity" 
                   ></ejs-slider>
                 </div>
-                <div class="col-xs-2 db-col-right" style="width: 50px;">
+                <div class="col-xs-2 db-col-right" >
                   <input id='textOpacityText' type="text" value='100%' class="db-readonly-input" readOnly="true"/>
                 </div>
               </div>
