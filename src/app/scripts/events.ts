@@ -22,7 +22,7 @@ import { ToolbarComponent } from "@syncfusion/ej2-vue-navigations";
 
 export class DiagramClientSideEvents {
     private selectedItem: SelectorViewModel; 
-    public diagram: DiagramComponent | undefined ;
+    public diagram: DiagramComponent ;
     public toolbarEditor: ToolbarComponent | undefined;
     public ddlTextPosition: DropDownListComponent ;
     constructor(selectedItem: SelectorViewModel) {
@@ -185,7 +185,8 @@ export class DiagramClientSideEvents {
         }
     }
     public created(){
-        (this.diagram as any).fitToPage({ mode: 'Page', region: 'Content'});
+        let diagram: Diagram = (document.getElementById("diagram") as any).ej2_instances[0];
+        diagram.fitToPage({ mode: 'Page', region: 'Content' });
     }
     public nodePositionChange(args: IDraggingEventArgs): void {
         this.selectedItem.preventPropertyChange = true;
@@ -215,9 +216,7 @@ export class DiagramClientSideEvents {
         this.selectedItem.isModified = true;
     };
 
-    public scrollChange(args: IScrollChangeEventArgs): void {
-        // this.selectedItem.scrollSettings.currentZoom = (args.newValue.CurrentZoom * 100).toFixed() + "%";
-    }
+   
 
     public nodeRotationChange(args: IRotationEventArgs): void {
         this.selectedItem.preventPropertyChange = true;
@@ -355,7 +354,7 @@ export class DiagramClientSideEvents {
             (args.element as any).height = 18;
         }
         else if((args.element as any).id.indexOf('Small Gas Range')!== -1){
-            (args.element as any).width = 80;
+            (args.element as any).width = 70;
             (args.element as any).height = 32;
         }
         else if((args.element as any).id.indexOf('Large Gas Range')!== -1 || (args.element as any).id.indexOf('Large Gas Range1')!== -1){
@@ -373,11 +372,7 @@ export class DiagramClientSideEvents {
             (args.element as any).width = 68;
             (args.element as any).height = 71;
         }
-        else if((args.element as any).id.indexOf('Staircase1')!== -1){
-            (args.element as any).width = 150;
-            (args.element as any).height = 100;
-        }
-        else if((args.element as any).id.indexOf('Staircase')!== -1){
+        else if((args.element as any).id.indexOf('Staircase')!== -1 || (args.element as any).id.indexOf('Staircase1')!== -1 ||(args.element as any).id.indexOf('Staircase2')!== -1){
             (args.element as any).width = 150;
             (args.element as any).height = 50;
         }
@@ -388,8 +383,8 @@ export class DiagramClientSideEvents {
         }
         else if( (args.element as any).id.indexOf('Room')!== -1 || (args.element as any).id.indexOf('T Room')!== -1 ||(args.element as any).id.indexOf('L Room')!== -1  || (args.element as any).id.indexOf('T Wall')!== -1 )
         {
-            (args.element as any).width = 50;
-            (args.element as any).height =50;
+            (args.element as any).width = 100;
+            (args.element as any).height =100;
         }
         else if((args.element as any).id.indexOf('Double Sink')!== -1 || (args.element as any).id.indexOf('Double Sink1')!== -1|| (args.element as any).id.indexOf('Double Sink2')!== -1|| (args.element as any).id.indexOf('Double Sink4')!== -1  ){
             (args.element as any).width = 76;

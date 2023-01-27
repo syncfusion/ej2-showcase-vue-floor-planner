@@ -649,10 +649,11 @@ input, button, select, textarea {
 
 .e-toolbar .e-toolbar-items .e-toolbar-item .e-tbar-btn.e-btn,
 .e-toolbar .e-toolbar-items .e-toolbar-item .e-dropdown-btn.e-btn {
-    height: 100%;
-    margin: 0px 0px 6px;
+    height: 30px;
+    margin: -2px 0px 6px 0px;
     /* background: #ffffff;*/
     background: transparent;
+    
 }
 
 .e-toolbar .e-toolbar-items .e-toolbar-item .e-tbar-btn.e-btn {
@@ -2270,6 +2271,8 @@ input.e-input::selection,
 
 .e-tooltip-wrap.e-popup.e-control.e-popup-open {
     pointer-events: none !important;
+    background-color: #000000;
+    color: red;
 }
 
 .e-control:focus, .e-control *:focus {

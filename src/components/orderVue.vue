@@ -54,13 +54,13 @@ mounted() {
         var diagramContainer = document.getElementsByClassName('diagrambuilder-container')[0];
         if (diagramContainer.classList.contains('hide-properties')) {
                 diagramContainer.classList.remove('hide-properties');
-                (document.getElementById('hideProperty') as HTMLButtonElement).style.backgroundColor = ''
-                // (document.getElementById('hideProperty') as any).ej2_instances[0].isPrimary = true;
+                (document.getElementById('hideProperty') as HTMLButtonElement).style.backgroundColor = '';
+                 (document.getElementById('hideProperty') as any).ej2_instances[0].isPrimary = true;
         }
         else {
             diagramContainer.classList.add('hide-properties');
-            (document.getElementById('hideProperty') as any).style.backgroundColor = '#e3e3e3'
-            // hidePropertyBtn.isPrimary = false;
+            (document.getElementById('hideProperty') as any).style.backgroundColor = '#e3e3e3';
+           (document.getElementById('hideProperty') as any).ej2_instances[0].isPrimary = false;
         }
         if (this.diagram) {
             this.diagram.updateViewPort();
