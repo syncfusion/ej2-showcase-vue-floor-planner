@@ -142,7 +142,7 @@ export class Palettes {
         // { id: 'bpmn', expanded: false, symbols: this.getBPMNShapes(), title: 'BPMN Shapes' },
         // { id: 'connectors', expanded: false, symbols: this.getConnectors(), title: 'Connectors' },
 
-        { id: 'door', expanded: true, symbols: this.getDoorShapes(), title: 'Doors and Walls' },
+        { id: 'door', expanded: true, symbols: this.getDoorShapes(), iconCss: 'e-ddb-icons e-flow' ,title: 'Doors and Walls' },
     { id: 'diningRoom', expanded: true, symbols: this.getDiningRoomShapes(), iconCss: 'e-ddb-icons e-flow', title: 'Dining Room' },
     { id: 'kitchen', expanded: true, symbols: this.getKitchenShapes(), iconCss: 'e-ddb-icons e-flow', title: 'Kitchen'},
     { id: 'bedRoom', expanded: true, symbols: this.getBedRoomShapes(), iconCss: 'e-ddb-icons e-flow', title: 'Bed Room' },
@@ -152,7 +152,7 @@ export class Palettes {
     public expandMode: ExpandMode = 'Multiple';
 
     public enableSearch: boolean = true;
-    public symbolMargin: MarginModel = { left: 5, right: 5, top: 5, bottom: 5 };
+    public symbolMargin: MarginModel = { left: 5, right: 5, top: 5, bottom: 10 };
 
     public getSymbolInfo(symbol: NodeModel): SymbolInfo {
         return { fit: true };
@@ -196,7 +196,7 @@ export class Palettes {
         }
         else if(node.id === 'Large Gas Range' ||node.id ==='Large Gas Range1'  )
         {
-          node.width = 50;
+          node.width = 60;
           node.height = 25;
         }
         else if(node.id ==='Refrigerator' ||node.id ==='Water Cooler')

@@ -576,7 +576,7 @@ export class PageSettings {
 }
 
 export class ScrollSettings {
-  public currentZoom = "100%";
+  public currentZoom = "82%";
 }
 
 export class MindMapSettings {

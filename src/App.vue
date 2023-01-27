@@ -92,9 +92,9 @@
             </ejs-dropdownbutton>
           </div>
         </div>
-         <div class='db-toolbar-editor'>
-          <div class='db-toolbar-container '>
-            <ejs-toolbar id="toolbarEditor" overflowMode="Scrollable" v-on:clicked="toolbarEditorClick($event)">
+         <div class='db-toolbar-editor' >
+          <div class='db-toolbar-container ' >
+            <ejs-toolbar id="toolbarEditor"  overflowMode="Scrollable" v-on:clicked="toolbarEditorClick($event)">
               <e-items>
                 <e-item
                   prefixIcon = 'sf-icon-undo tb-icons'
@@ -214,13 +214,14 @@
               :connectors="connectors"
               :getNodeDefaults="setNodeDefaults"
               :getConnectorDefaults="setConnectorDefaults"
+              :created="this.diagramEvents.created.bind(this.diagramEvents)"
               :selectionChange="this.diagramEvents.selectionChange.bind(this.diagramEvents)"
               :positionChange="this.diagramEvents.nodePositionChange.bind(this.diagramEvents)"
               :sizeChange="this.diagramEvents.nodeSizeChange.bind(this.diagramEvents)"   
               :rotateChange="this.diagramEvents.nodeRotationChange.bind(this.diagramEvents)"
               :dragEnter="this.diagramEvents.dragEnter.bind(this.diagramEvents)"
               :historyChange="this.diagramEvents.historyChange.bind(this.diagramEvents)"
-              :scrollChange="this.diagramEvents.scrollChange.bind(this.diagramEvents)"
+              :scrollChange="this.scrollChange.bind(this)"
               :collectionChange="this.diagramEvents.collectionChange.bind(this.diagramEvents)"
             ></ejs-diagram>
           </div>
@@ -248,12 +249,12 @@
                 </div>
               </div>
               <div class="col-xs-6 db-col-left">
-                <ejs-button id="pagePortrait" isPrimary="true" isToggle="true" style="font-size: 12px;"
+                <ejs-button id="pagePortrait" isPrimary="true" isToggle="true" style="font-size: 10px;"
                   cssClass="e-flat e-primary"  iconCss="sf-icon-portrait"  name="pageSettings"
                   v-on:click.native='diagramPropertyBinding.pageOrientationChange($event)'>Portrait</ejs-button>
               </div>
               <div class="col-xs-6 db-col-right" >
-                  <ejs-button id="pageLandscape" isPrimary="true" isToggle="true" style="font-size: 12px;"
+                  <ejs-button id="pageLandscape" isPrimary="true" isToggle="true" style="font-size: 10px;"
                     cssClass="e-flat e-primary e-active" iconCss="sf-icon-landscape" name="pageSettings"
                     v-on:click.native='diagramPropertyBinding.pageOrientationChange($event)'>LandScape</ejs-button>
               </div>
@@ -473,7 +474,7 @@
                     <div class="row">
                       <div class="col-xs-6 db-col-right" style="width: 77px;margin-right: 0px;">
                         <ejs-dropdownlist id="nodeBorderStyle" v-model="selectedItem.nodeProperties.strokeStyle" :dataSource="dropDownDataSources.borderStyles"
-                                    popupWidth="160px" :fields="dropdownListFields" :itemTemplate="itemTemplate" :valueTemplate="valueTemplate">
+                          popupWidth="160px" :fields="dropdownListFields" :itemTemplate="itemTemplate" :valueTemplate="valueTemplate">
                       </ejs-dropdownlist>
                       </div>
                       <div class="col-xs-2 db-col-center" >
@@ -902,7 +903,8 @@ import {
   CommandModel,
   Decorator,
   DecoratorModel,
-  DecoratorShapes
+  DecoratorShapes,
+  IScrollChangeEventArgs
 } from "@syncfusion/ej2-vue-diagrams";
 import { formatUnit, createElement, closest, Ajax } from "@syncfusion/ej2-base";
 import { Uploader, UploaderComponent } from "@syncfusion/ej2-vue-inputs";
@@ -934,8 +936,7 @@ import {
   FieldSettingsModel,
   DropDownListComponent,
 } from "@syncfusion/ej2-vue-dropdowns";
-import { enableRipple } from '@syncfusion/ej2-base';
-enableRipple(true);
+
 import { Button, ButtonComponent } from "@syncfusion/ej2-vue-buttons";
 import {
   DiagramComponent,
@@ -1114,7 +1115,9 @@ export default class User extends Vue {
     let selectedItemObj:any = document.getElementById("diagram");
     let  toolbarEditor : any = document.getElementById("toolbarEditor");
     this.toolbarEditor = toolbarEditor.ej2_instances[0];
-    let exportDialogObj : any = document.getElementById("exportDialog");
+    let btnZoomIncrement : any =document.getElementById("toolbarEditor");
+    btnZoomIncrement = btnZoomIncrement.ej2_instances[0];
+    let  exportDialogObj: any = document.getElementById("exportDialog");
     this.exportDialog = exportDialogObj.ej2_instances[0];
     let printDialog : any = document.getElementById("printDialog");
     this.printDialog = printDialog.ej2_instances[0];
@@ -2618,6 +2621,13 @@ public connectors :ConnectorModel[] | any=[
         .classList.remove("db-edit-name");
     }
   }
+   public scrollChange(args: IScrollChangeEventArgs): void {
+        var btnZoomIncrement = (document.getElementById("btnZoomIncrement") as any).ej2_instances[0];
+        if(args.panState !=='Start'){
+            btnZoomIncrement.content = Math.round((this.diagram as any).scrollSettings.currentZoom * 100) + ' %';
+            }
+        // this.selectedItem.scrollSettings.currentZoom = (args.newValue.CurrentZoom * 100).toFixed() + "%";
+    }
     public arrangeMenuBeforeOpen(args: BeforeOpenCloseMenuEventArgs): void {
         this.updateMenuStyle(args)
         if (args.event && closest(args.event.target as Element, ".e-dropdown-btn") !== null) {
@@ -2903,8 +2913,8 @@ private buttonInstance: any;
             args.item.iconCss = args.item.iconCss ? '' : 'sf-icon-check-tick';
             break;
     case 'fittoscreen':
-            (this.diagram as any).fitToPage({ mode: 'Page', region: 'Content', margin: { left: 0, top: 0, right: 0, bottom: 0 } });
-            args.item.iconCss = args.item.iconCss ? '' : 'sf-icon-check-tick';
+            this.diagram.fitToPage({ mode: 'Page', region: 'Content' });
+            // args.item.iconCss = args.item.iconCss ? '' : 'sf-icon-check-tick';
             break;
     case 'fittowidth':
             (this.diagram as any).fitToPage({ mode: 'Width', region: 'Content', margin: { left: 0, top: 0, right: 0, bottom: 0 } });
