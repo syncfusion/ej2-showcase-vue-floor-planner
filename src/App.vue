@@ -117,7 +117,6 @@
                 <e-item
                   prefixIcon= 'sf-icon-text' tooltipText= 'Text Tool' cssClass='tb-item-end'
                 ></e-item>
-                 <e-item type="Separator" :visible= false align='Center'> </e-item>
                 <e-item
                  prefixIcon= 'sf-icon-group' tooltipText='Group' :visible= false align='Center' cssClass= 'tb-item-start tb-item-align-category'
                 ></e-item>
@@ -593,7 +592,7 @@
                   <div class="col-xs-4 db-col-right">
                     <div class="db-text-container">
                       <div class="db-text-input">
-                        <ejs-numerictextbox style="width: 73px;" id="fontSizeTextProperties" :min="1" :step="1"  v-model="selectedItem.textProperties.fontSize"></ejs-numerictextbox>
+                        <ejs-numerictextbox style="width: 73px;" id="fontSizeTextProperties" :min="1" :step="1" format="n0" v-model="selectedItem.textProperties.fontSize"></ejs-numerictextbox>
                       </div>
                     </div>
                   </div>
@@ -1146,7 +1145,7 @@ export default class User extends Vue {
         showRulers: true
     }
   public pageSettings: PageSettingsModel = {
-    background: { color: '#FFFFFF' }, width: 816, height: 1056, multiplePage: false, margin: { left: 5, top: 5 },
+    background: { color: '#FFFFFF' }, width: 816, height: 1056, multiplePage: true, margin: { left: 5, top: 5 },
     orientation: 'Landscape'
   };
   public scrollSettings: ScrollSettingsModel = {
@@ -2927,11 +2926,11 @@ private buttonInstance: any;
           args.item.iconCss = args.item.iconCss ? '' : 'sf-icon-check-tick';
           if(args.item.iconCss){
             (this.diagram as any).pageSettings.showPageBreaks = true;
-            // showPageBreaks.checked = true;
+            this.selectedItem.pageSettings.pageBreaks = true;
           }
           else{
             (this.diagram as any).pageSettings.showPageBreaks = false;
-            // showPageBreaks.checked = false;
+            this.selectedItem.pageSettings.pageBreaks = false;
           }
           break;
           case 'landscape':
@@ -3340,7 +3339,8 @@ public onUploadFailure(args: { [key: string]: Object }): void {
         diagram.exportDiagram({
             fileName: this.selectedItem.exportSettings.fileName,
             format: this.selectedItem.exportSettings.format as FileFormats,
-            region: this.selectedItem.exportSettings.region as DiagramRegions
+            region: this.selectedItem.exportSettings.region as DiagramRegions,
+            multiplePage :this.selectedItem.diagram.pageSettings.multiplePage
         });
         this.exportDialog.hide();
     }
@@ -3448,13 +3448,13 @@ public hideElements(): void {
         var diagramContainer = document.getElementsByClassName('diagrambuilder-container')[0];
         if (diagramContainer.classList.contains('hide-properties')) {
                 diagramContainer.classList.remove('hide-properties');
-                (document.getElementById('hideProperty') as HTMLButtonElement).style.backgroundColor = ''
-                // (document.getElementById('hideProperty') as any).ej2_instances[0].isPrimary = true;
+                (document.getElementById('hideProperty') as HTMLButtonElement).style.backgroundColor = '';
+                (document.getElementById('hideProperty') as any).ej2_instances[0].isPrimary = true;
         }
         else {
             diagramContainer.classList.add('hide-properties');
-            (document.getElementById('hideProperty') as any).style.backgroundColor = '#e3e3e3'
-            // hidePropertyBtn.isPrimary = false;
+            (document.getElementById('hideProperty') as any).style.backgroundColor = '#e3e3e3';
+           (document.getElementById('hideProperty') as any).ej2_instances[0].isPrimary = false;
         }
         if (this.diagram) {
             this.diagram.updateViewPort();

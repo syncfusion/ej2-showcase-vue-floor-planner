@@ -2271,8 +2271,8 @@ input.e-input::selection,
 
 .e-tooltip-wrap.e-popup.e-control.e-popup-open {
     pointer-events: none !important;
-    background-color: #000000;
-    color: red;
+    /* background-color: #000000;
+    color: red; */
 }
 
 .e-control:focus, .e-control *:focus {
