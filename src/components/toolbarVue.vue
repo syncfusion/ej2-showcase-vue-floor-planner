@@ -53,6 +53,7 @@ mounted() {
     this.diagram = diagramObj.ej2_instances[0];
     let selectedItems: any = document.getElementById("diagram");
     this.selectedItem.diagram = selectedItems.ej2_instances[0];
+   
  }
 public  menuItems: ItemModel[]=[
           { text: 'Zoom In' }, { text: 'Zoom Out' }, { text: 'Zoom to Fit' }, { text: 'Zoom to 50%' },
