@@ -11,8 +11,7 @@
         <div class="db-diagram-name-container">
           <span
             id="diagramName"
-            style="
-              width: 250px;
+            style=" width: 250px;
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
@@ -86,12 +85,15 @@
               cssClass="db-dropdown-menu"
               :items="dropDownDataSources.viewMenuItems"
                v-on:select="menuClick($event)"
-               
+               :beforeOpen="arrangeMenuBeforeOpen"
+              :beforeClose="arrangeMenuBeforeClose"
+              :beforeItemRender="beforeItemRender"
               
               >View
             </ejs-dropdownbutton>
           </div>
         </div>
+      </div>
          <div class='db-toolbar-editor' >
           <div class='db-toolbar-container ' >
             <ejs-toolbar id="toolbarEditor"  overflowMode="Scrollable" v-on:clicked="toolbarEditorClick($event)">
@@ -183,7 +185,6 @@
             </ejs-toolbar>
           </div>
       </div>
-      </div>
     </div>
     <div class="row content">
       <div class="sidebar show-overview">
@@ -191,7 +192,7 @@
           <ejs-symbolpalette id="symbolpalette" ref="paletteObj" width="100%" height="100%" 
            :palettes='palettes.palettes' 
            :getSymbolInfo='palettes.getSymbolInfo' :symbolMargin='palettes.symbolMargin'
-           :symbolPreview ='palettes.symbolPreview'
+          
            :getNodeDefaults='palettes.setPaletteNodeDefaults'
            :enableSearch='palettes.enableSearch'>
           </ejs-symbolpalette>
@@ -887,6 +888,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+
 import {
   Diagram,
   DiagramPlugin,
@@ -2912,7 +2914,7 @@ private buttonInstance: any;
             args.item.iconCss = args.item.iconCss ? '' : 'sf-icon-check-tick';
             break;
     case 'fittoscreen':
-            this.diagram.fitToPage({ mode: 'Page', region: 'Content' });
+            this.diagram.fitToPage({ mode: 'Page', region: 'Content', margin: { left: 0, top: 0, right: 0, bottom: 0 }, });
             // args.item.iconCss = args.item.iconCss ? '' : 'sf-icon-check-tick';
             break;
     case 'fittowidth':
