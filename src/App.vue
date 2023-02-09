@@ -206,7 +206,7 @@
               ref="diagram"
               :width="width"
               :height="height"
-              :snapSettings="snapSettings"
+            
               :pageSettings="pageSettings"
               :scrollSettings="scrollSettings"
               :rulerSettings="rulerSettings"
@@ -1138,11 +1138,7 @@ export default class User extends Vue {
   public paletteheight = "100%";
   public symbolWidth = "50";
   public symbolHeight = "50";
-  public snapSettings: SnapSettingsModel = {
-    horizontalGridlines: gridlines,
-    verticalGridlines: gridlines,
-    constraints: SnapConstraints.All & ~SnapConstraints.SnapToLines,
-  };
+  
   public rulerSettings: RulerSettingsModel={
         showRulers: true
     }
