@@ -56,7 +56,7 @@ export class DiagramClientSideEvents {
                 } else if (selectedItems.length === 1) {
                     this.singleSelectionSettings(selectedItems[0]);
                     for(var i=7;i<=28;i++){
-                        if(i<=17)
+                        if(i<=16)
                         {
                             (toolbarEditor as any).items[i].visible = false;
                         }
@@ -449,9 +449,17 @@ export class DiagramPropertyBinding {
     }
 
     public pageBreaksChange(args: CheckBoxChangeEventArgs): void {
+        let items = ((document.getElementById("btnViewMenu") as any).ej2_instances[0]).items;
         if (args.event) {
             (this.selectedItem as any).pageSettings.pageBreaks = args.checked;
             this.selectedItem.diagram.pageSettings.showPageBreaks = args.checked;
+            if(args.checked === true){
+                items[5].iconCss = 'sf-icon-check-tick';
+            }
+            else
+            {
+            items[5].iconCss = '';    
+            }
         }
     }
 
@@ -464,7 +472,7 @@ export class DiagramPropertyBinding {
     var pageWidth = paperSize.pageWidth;
     var pageHeight = paperSize.pageHeight;
     if (pageWidth && pageHeight) {
-        if (diagram.pageSettings.orientation = 'Portrait') {
+        if (diagram.pageSettings.orientation === 'Portrait') {
             if (pageWidth > pageHeight) {
                 var temp = pageWidth;
                 pageWidth = pageHeight;
@@ -480,7 +488,8 @@ export class DiagramPropertyBinding {
         }
         diagram.pageSettings.width = pageWidth;
         diagram.pageSettings.height = pageHeight;
-        
+        this.selectedItem.pageSettings.pageWidth = pageWidth;
+        this.selectedItem.pageSettings.pageHeight = pageHeight;
       }
     else{
       (document.getElementById('pageOrientation') as any).style.display = 'none';

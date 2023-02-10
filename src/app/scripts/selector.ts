@@ -538,7 +538,7 @@ export class PrintSettings {
     this.m_isLandscape = isLandscape;
   }
 
-  private m_multiplePage = false;
+  private m_multiplePage = true;
   public get multiplePage(): boolean {
     return this.m_multiplePage;
   }
