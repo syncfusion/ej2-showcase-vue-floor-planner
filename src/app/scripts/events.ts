@@ -184,10 +184,7 @@ export class DiagramClientSideEvents {
             }
         }
     }
-    public created(){
-        let diagram: Diagram = (document.getElementById("diagram") as any).ej2_instances[0];
-        diagram.fitToPage({ mode: 'Page', region: 'Content' });
-    }
+   
     public nodePositionChange(args: IDraggingEventArgs): void {
         this.selectedItem.preventPropertyChange = true;
         this.selectedItem.nodeProperties.offsetX = (Math.round((args as any).newValue.offsetX * 100) / 100);
