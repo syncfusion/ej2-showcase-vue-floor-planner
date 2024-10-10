@@ -1096,8 +1096,8 @@ export default class User extends Vue {
   public uploadButtons: any = this.getUploadButtons();
   public isOpen: boolean;
   public path: Object = {
-        saveUrl: "https://aspnetmvc.syncfusion.com/services/api/uploadbox/Save",
-        removeUrl: "https://aspnetmvc.syncfusion.com/services/api/uploadbox/Remove"
+        saveUrl: "https://services.syncfusion.com/vue/production/api/FileUploader/Save",
+        removeUrl: "https://services.syncfusion.com/vue/production/api/FileUploader/Remove",
     };
   public diagramEvents: DiagramClientSideEvents = new DiagramClientSideEvents(this.selectedItem );
   public diagramPropertyBinding: DiagramPropertyBinding = new DiagramPropertyBinding(this.selectedItem);
