@@ -206,7 +206,6 @@
               ref="diagram"
               :width="width"
               :height="height"
-            
               :pageSettings="pageSettings"
               :scrollSettings="scrollSettings"
               :rulerSettings="rulerSettings"
@@ -214,7 +213,6 @@
               :connectors="connectors"
               :getNodeDefaults="setNodeDefaults"
               :getConnectorDefaults="setConnectorDefaults"
-              :created="this.diagramEvents.created.bind(this.diagramEvents)"
               :selectionChange="this.diagramEvents.selectionChange.bind(this.diagramEvents)"
               :positionChange="this.diagramEvents.nodePositionChange.bind(this.diagramEvents)"
               :sizeChange="this.diagramEvents.nodeSizeChange.bind(this.diagramEvents)"   
@@ -756,7 +754,7 @@
             <div class="col-xs-6 db-col-left">
               <div class="row">Format</div>
               <div class="row db-dialog-child-prop-row">
-                <ejs-dropdownlist id="exportFormat"    :value="selectedItem.exportSettings.format" :dataSource="dropDownDataSources.fileFormats"
+                <ejs-dropdownlist id="exportFormat"    v-model="selectedItem.exportSettings.format" :dataSource="dropDownDataSources.fileFormats"
                             :fields="dropdownListFields">
                         </ejs-dropdownlist>
               </div>
@@ -764,7 +762,7 @@
             <div class="col-xs-6 db-col-right">
               <div class="row">Region</div>
               <div class="row db-dialog-child-prop-row">
-                 <ejs-dropdownlist id="exportRegion" :value="selectedItem.exportSettings.region" :dataSource="dropDownDataSources.diagramRegions"
+                 <ejs-dropdownlist id="exportRegion" v-model="selectedItem.exportSettings.region" :dataSource="dropDownDataSources.diagramRegions"
                             :fields="dropdownListFields">
                   </ejs-dropdownlist>
               </div>
