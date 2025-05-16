@@ -3,13 +3,11 @@
  */
 
 import {
-    NodeModel, NodeConstraints, PointModel, ConnectorModel, LinearGradient,
-    Diagram, ConnectorConstraints, Node, TextStyle, TextStyleModel, SelectorConstraints, TextAlign, HorizontalAlignment, VerticalAlignment, Connector, ShapeAnnotationModel
+    NodeModel, NodeConstraints, PointModel, ConnectorModel, Node, TextStyleModel, TextAlign, HorizontalAlignment, VerticalAlignment
 } from '@syncfusion/ej2-diagrams';
 import { SelectorViewModel } from './selector';
-import { Dialog, DialogComponent } from '@syncfusion/ej2-vue-popups';
-import { Ajax } from '@syncfusion/ej2-base';
-import { Toolbar, ContextMenu, MenuItemModel, ToolbarComponent } from '@syncfusion/ej2-vue-navigations';
+import { DialogComponent } from '@syncfusion/ej2-vue-popups';
+import { ContextMenu, ToolbarComponent } from '@syncfusion/ej2-vue-navigations';
 
 export class PaperSize {
     public pageWidth: number = 0;
@@ -17,11 +15,10 @@ export class PaperSize {
 }
 
 export class UtilityMethods {
-
-    
     public tempDialog: DialogComponent | undefined;
     public toolbarEditor: ToolbarComponent | undefined;
 
+    // Binds node properties to the selected item.
     public bindNodeProperties(node: NodeModel, selectedItem: SelectorViewModel): void {
         selectedItem.preventPropertyChange = true;
         selectedItem.nodeProperties.offsetX = (Math.round((node as any).offsetX * 100) / 100);
@@ -41,25 +38,7 @@ export class UtilityMethods {
         selectedItem.preventPropertyChange = false;   
     }
 
-    public bindMindMapProperties(node: NodeModel, selectedItem: SelectorViewModel): void {
-        selectedItem.preventPropertyChange = true;
-        selectedItem.mindmapSettings.stroke = (node as any).style.strokeColor;
-        selectedItem.mindmapSettings.strokeStyle = (node as any).style.strokeDashArray ? (node as any).style.strokeDashArray : 'None';
-        selectedItem.mindmapSettings.strokeWidth = (node as any).style.strokeWidth;
-        selectedItem.mindmapSettings.fill = (node as any).style.fill;
-        selectedItem.mindmapSettings.opacity = ((node as any).style.opacity || 1) * 100;
-        selectedItem.mindmapSettings.opacityText = (selectedItem.mindmapSettings.opacity || '100') + '%';
-        if ((node as any).annotations.length > 0) {
-            let annotation: TextStyle = (node as any).annotations[0].style as TextStyle;
-            selectedItem.mindmapSettings.fontFamily = annotation.fontFamily;
-            selectedItem.mindmapSettings.fontColor = annotation.color;
-            selectedItem.mindmapSettings.fontSize = annotation.fontSize;
-            selectedItem.mindmapSettings.textOpacity = (annotation.opacity || 1) * 100;
-            selectedItem.mindmapSettings.textOpacityText = (selectedItem.mindmapSettings.textOpacity || '100') + '%';
-        }
-        selectedItem.preventPropertyChange = false;
-    }
-
+    // Binds text properties to the selected item
     public bindTextProperties(text: TextStyleModel, selectedItem: SelectorViewModel): void {
         selectedItem.preventPropertyChange = true;
         selectedItem.textProperties.fontColor = this.getHexColor((text as any).color);
@@ -80,6 +59,7 @@ export class UtilityMethods {
         selectedItem.preventPropertyChange = false;
     }
 
+    // Updates the text alignment in the toolbar
     public updateTextAlign(textAlign: TextAlign): void {
         let toolbarTextSubAlignment: any = document.getElementById('toolbarTextSubAlignment');
         if (toolbarTextSubAlignment) {
@@ -94,6 +74,7 @@ export class UtilityMethods {
         }
     }
 
+    // Updates horizontal and vertical alignment in the toolbar
     public updateHorVertAlign(horizontalAlignment: HorizontalAlignment, verticalAlignment: VerticalAlignment): void {
         let toolbarHorVerAlignment: any = document.getElementById('toolbarTextAlignment');
         if (toolbarHorVerAlignment) {
@@ -110,6 +91,7 @@ export class UtilityMethods {
         }
     }
 
+    // Binds connector properties to the selected item
     public bindConnectorProperties(connector: ConnectorModel, selectedItem: SelectorViewModel): void {
         selectedItem.preventPropertyChange = true;
         selectedItem.connectorProperties.lineColor = this.getHexColor((connector as any).style.strokeColor);
@@ -123,6 +105,7 @@ export class UtilityMethods {
         selectedItem.preventPropertyChange = false;   
     }
 
+    // Converts a color string to its hexadecimal representation
     public getHexColor(colorStr: string): string {
         let a: HTMLDivElement = document.createElement('div');
         a.style.color = colorStr;
@@ -135,6 +118,7 @@ export class UtilityMethods {
         return (colors.length >= 3) ? '#' + (((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1)) : '';
     }
 
+    // Gets the offset position based on a predefined string position
     public getOffset(position: string): PointModel {
         switch (position.toLowerCase()) {
             case 'topleft':
@@ -158,6 +142,7 @@ export class UtilityMethods {
         }
     }
 
+    // Gets the position string based on the offset values
     public getPosition(offset: PointModel): string {
         if (offset.x === 0 && offset.y === 0) {
             return 'TopLeft';
@@ -180,6 +165,7 @@ export class UtilityMethods {
         }
     }
 
+    // Changes the visibility of property containers based on the object type
     public objectTypeChange(objectType: string): void {
         (document.getElementById('diagramPropertyContainer') as any).style.display = 'none';
         (document.getElementById('nodePropertyContainer') as any).style.display = 'none';
@@ -198,6 +184,7 @@ export class UtilityMethods {
         }
     }
 
+    // Enables toolbar items according to the selected items
     public enableToolbarItems(selectedItems: Object[]): void {
         let toolbarContainer: HTMLDivElement = document.getElementsByClassName('db-toolbar-container')[0] as HTMLDivElement;
         let toolbarClassName: string = 'db-toolbar-container';
@@ -237,7 +224,7 @@ export class UtilityMethods {
         }
     }
 
-   
+    // Enables context menu items based on the current selection
     public enableArrangeMenuItems(selectedItem: SelectorViewModel): void {
         let contextInstance: any = document.getElementById('arrangeContextMenu');
         let contextMenu: ContextMenu = contextInstance.ej2_instances[0] as any;
@@ -247,12 +234,34 @@ export class UtilityMethods {
         for (let i: number = 0; i < contextMenu.items.length; i++) {
             contextMenu.enableItems([(contextMenu.items[i] as any).text], false);
         }
-    }
+        if (selectedItem.diagramType === 'GeneralDiagram') {
+                if ((selectedItems as any).length > 1) {
+                    contextMenu.enableItems(['Align Objects', 'Distribute Objects', 'Match Size', 'Lock', 'Unlock', 'Group'], true);
+                }
+                else if ((selectedItems as any).length === 1) {
+                    contextMenu.enableItems(['Send To Back', 'Bring To Front', 'Send Backward', 'Bring Forward']);
+                    var object = (selectedItems as any)[0];
+                    if (object instanceof Node) {
+                        if (object.children && object.children.length > 0) {
+                            contextMenu.enableItems(['Ungroup']);
+                        }
+                        if (object.constraints & NodeConstraints.Drag) {
+                            contextMenu.enableItems(['Lock'], true);
+                        }
+                        else {
+                            contextMenu.enableItems(['Unlock'], true);
+                        }
+                    }
+                }
+            }
+          };
+    
 
     public fillColorCode: string[] = ['#C4F2E8', '#F7E0B3', '#E5FEE4', '#E9D4F1', '#D4EFED', '#DEE2FF'];
 
     public borderColorCode: string[] = ['#8BC1B7', '#E2C180', '#ACCBAA', '#D1AFDF', '#90C8C2', '#BBBFD6'];
-
+    
+    // Retrieves the page dimensions for a given paper size
     public getPaperSize(paperName: string): PaperSize {
         let paperSize: PaperSize = new PaperSize();
         switch (paperName) {
@@ -288,4 +297,29 @@ export class UtilityMethods {
         return paperSize;
     }
 
+    // Displays a color picker in the toolbar
+    public showColorPicker(propertyName: string, toolbarName: string) {
+ 
+    const fillElement = document.getElementById(propertyName)?.parentElement?.querySelector<HTMLElement>('.e-dropdown-btn');
+    if (fillElement) {
+      fillElement.click();
+      const popupElement = document.getElementById(`${fillElement.id}-popup`);
+      if (popupElement) {
+        const bounds = document.querySelector<HTMLElement>(`.${toolbarName}`)?.getBoundingClientRect();
+        
+        if (bounds) {
+          popupElement.style.left = `${bounds.left}px`;
+          popupElement.style.top = `${bounds.top + 40}px`;
+        } else {
+          console.error(`Element with class ${toolbarName} not found`);
+        }
+      } else {
+        console.error(`Popup element for ${fillElement.id} not found`);
+      }
+    } else {
+      console.error(`Fill element for property ${propertyName} not found`);
+    }
+  }
 }
+
+

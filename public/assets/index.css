@@ -74,7 +74,7 @@ textarea.e-input,
   margin: 0;
   margin-bottom: 4px;
   outline: none;
-  padding: 4px 0 8px;
+  padding: 8px 8px 8px;
   text-indent: 0;
   width: 100%;
 }

@@ -6,7 +6,8 @@ export class DropDownDataSources {
   public viewMenuItems: ItemModel[] = this.getViewMenuItems();
   public arrangeMenuItems: MenuItemModel[] = this.getArrangeMenuItems();
   public insertMenuItems: ItemModel[] = this.getInsertMenuItems();
- 
+  
+  // Returns the list of file menu items with corresponding icons
   public getFileMenuItems(): ItemModel[] {
     const menuItems: ItemModel[] = [
       { text : 'New', iconCss:'sf-icon-new'},
@@ -17,6 +18,8 @@ export class DropDownDataSources {
     ];
     return menuItems;
   }
+
+  // Returns the list of edit menu items with corresponding icons
   public getEditMenuItems(): ItemModel[] {
     const menuItems: ItemModel[] = [{ text : 'Undo', iconCss:'sf-icon-undo'},
     { text : 'Redo', iconCss:'sf-icon-redo'},
@@ -29,6 +32,8 @@ export class DropDownDataSources {
 ];
     return menuItems;
   }
+
+  // Returns the list of view menu items such as rulers, grids, and fit options
   public getViewMenuItems(): ItemModel[] {
     const menuItems: ItemModel[] = [
       { text: 'Show Rulers', iconCss: 'sf-icon-check-tick' },
@@ -42,6 +47,7 @@ export class DropDownDataSources {
     return menuItems;
   }
 
+  // Returns the list of insert menu items for image and link insertion
   public getInsertMenuItems(): ItemModel[] {
     const menuItems: ItemModel[] = [
       { text: 'Insert Image' ,iconCss:'sf-icon-insert_image '},
@@ -49,6 +55,8 @@ export class DropDownDataSources {
     ];
     return menuItems;
   }
+
+  // Returns the list of arrange menu items including orientation and page size options
   public getArrangeMenuItems(): MenuItemModel[] {
     const menuItems1: any[] = [
       
@@ -67,16 +75,21 @@ export class DropDownDataSources {
     ];
     return menuItems1;
   }
+
+  // Array defining different file export formats with their values
   public fileFormats: { [key: string]: any }[] = [
     { text: "JPG", value: "JPG" },
     { text: "PNG", value: "PNG" },
     { text: "SVG", value: "SVG" },
   ];
+
+  // Array defining different diagram export regions
   public diagramRegions: { [key: string]: any }[] = [
     { text: "Content", value: "Content" },
     { text: "PageSettings", value: "PageSettings" },
   ];
- 
+  
+  // Array defining border styles with specific patterns and class names
   public borderStyles: { [key: string]: any }[] = [
     {
       text: "None",
@@ -104,6 +117,8 @@ export class DropDownDataSources {
       className: "ddl-svg-style ddl_linestyle_four_four_one",
     },
   ];
+
+  // Array listing font families available for text styling
   public fontFamilyList: { [key: string]: any }[] = [
     { text: "Arial", value: "Arial" },
     { text: "Aharoni", value: "Aharoni" },
@@ -114,7 +129,7 @@ export class DropDownDataSources {
     { text: "Verdana", value: "Verdana" },
   ];
 
- 
+  // Array defining various zoom levels and options for fitting the screen
   public zoomMenuItems: ItemModel[] = [
     { text: "400%" },
     { text: "300%" },
@@ -127,6 +142,8 @@ export class DropDownDataSources {
     { separator: true },
     { text: "Fit To Screen" },
   ];
+
+  // Array listing different paper sizes and a custom option for diagram pages
   public paperList: { [key: string]: any }[] = [
     { text: "Letter (8.5 in x 11 in)", value: "Letter" },
     { text: "Legal (8.5 in x 14 in)", value: "Legal" },
