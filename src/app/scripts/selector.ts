@@ -3,12 +3,11 @@
  */
 import {
     Diagram, NodeModel, Node, NodeConstraints,
-    ConnectorModel, Connector, Segments, DecoratorShapes, ConnectorConstraints, TextStyleModel
+    ConnectorModel, Connector, Segments, DecoratorShapes, TextStyleModel
 } from "@syncfusion/ej2-diagrams";
 import { UtilityMethods } from "./utilitymethods";
 import { isNullOrUndefined } from "@syncfusion/ej2-base";
 import { ToolbarComponent } from "@syncfusion/ej2-vue-navigations";
-import { DialogComponent } from "@syncfusion/ej2-vue-popups";
 
 export class NodeProperties {
     private m_offsetX: number = 0;
@@ -192,12 +191,14 @@ export class NodeProperties {
 
   public propertyChange: Function | undefined;
 
+  // Triggers a property change
   public triggerPropertyChange(propertyName: string, propertyValue: Object): void {
     if (!isNullOrUndefined(this.propertyChange as any)) {
       (this.propertyChange as any).call(this, { propertyName: propertyName, propertyValue: propertyValue });
     }
   }
 
+  // Applies gradient to a node
   public getGradient(node: Node): void {
     let gradientValue: { [key: string]: number } =
       this.getGradientDirectionValue(this.gradientDirection);
@@ -211,6 +212,7 @@ export class NodeProperties {
     };
   }
 
+  // Gets gradient direction values
   public getGradientDirectionValue(direction: string): { [key: string]: number } {
     let gradientValue: { [key: string]: number } = {};
     let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
@@ -227,6 +229,7 @@ export class NodeProperties {
     return gradientValue;
   }
 
+  // Gets formatted color value
   private getColor(colorName: string): string {
     if ((window.navigator as any).msSaveBlob && colorName.length === 9) {
       return colorName.substring(0, 7);
@@ -348,6 +351,7 @@ export class ConnectorProperties {
 
   public propertyChange: Function | undefined;
 
+  // Triggers a property change
   public triggerPropertyChange(propertyName: string, propertyValue: Object): void {
     if (!isNullOrUndefined(this.propertyChange as any)) {
       (this.propertyChange as any).call(this, { propertyName: propertyName, propertyValue: propertyValue });
@@ -456,6 +460,7 @@ export class TextProperties {
 
   public propertyChange: Function | undefined;
 
+  // Triggers a property change.
   public triggerPropertyChange(propertyName: string, propertyValue: Object): void {
     if (!isNullOrUndefined(this.propertyChange as any)) {
       (this.propertyChange as any).call(this, { propertyName: propertyName, propertyValue: propertyValue });
@@ -579,264 +584,6 @@ export class ScrollSettings {
   public currentZoom = "82%";
 }
 
-export class MindMapSettings {
-  private m_levelType = "Level0";
-  public get levelType(): string {
-    return this.m_levelType;
-  }
-
-  public set levelType(levelType: string) {
-    if (this.m_levelType !== levelType) {
-      this.m_levelType = levelType;
-      this.triggerPropertyChange("levelType", levelType);
-    }
-  }
-
-  private m_fill = "white";
-  public get fill(): string {
-    return this.m_fill;
-  }
-
-  public set fill(fill: string) {
-    if (this.m_fill !== fill) {
-      this.m_fill = fill;
-      this.triggerPropertyChange("fill", fill);
-    }
-  }
-
-  private m_stroke = "white";
-  public get stroke(): string {
-    return this.m_stroke;
-  }
-
-  public set stroke(stroke: any) {
-    if (this.m_stroke !== stroke) {
-      this.m_stroke = stroke;
-      this.triggerPropertyChange("stroke", stroke);
-    }
-  }
-
-  private m_strokeStyle = "None";
-  public get strokeStyle(): string {
-    return this.m_strokeStyle;
-  }
-
-  public set strokeStyle(strokeStyle: string) {
-    if (this.m_strokeStyle !== strokeStyle) {
-      this.m_strokeStyle = strokeStyle;
-      this.triggerPropertyChange("strokeStyle", strokeStyle);
-    }
-  }
-
-  private m_strokeWidth = 1;
-  public get strokeWidth(): number {
-    return this.m_strokeWidth;
-  }
-
-  public set strokeWidth(strokeWidth: number) {
-    if (this.m_strokeWidth !== strokeWidth) {
-      this.m_strokeWidth = strokeWidth;
-      this.triggerPropertyChange("strokeWidth", strokeWidth);
-    }
-  }
-
-  private m_opacity: number | undefined;
-  public get opacity(): number {
-    return this.m_opacity as number;
-  }
-
-  public set opacity(opacity: number) {
-    if (this.m_opacity !== opacity) {
-      this.m_opacity = opacity;
-      this.triggerPropertyChange("opacity", opacity);
-    }
-  }
-  public opacityText: string | undefined;
-
-  private m_fontFamily = "Arial";
-  public get fontFamily(): string {
-    return this.m_fontFamily;
-  }
-
-  public set fontFamily(fontFamily: string) {
-    if (this.m_fontFamily !== fontFamily) {
-      this.m_fontFamily = fontFamily;
-      this.triggerPropertyChange("fontFamily", fontFamily);
-    }
-  }
-
-  private m_fontSize: number | undefined;
-  public get fontSize(): number {
-    return this.m_fontSize as number;
-  }
-
-  public set fontSize(fontSize: number) {
-    if (this.m_fontSize !== fontSize) {
-      this.m_fontSize = fontSize;
-      this.triggerPropertyChange("fontSize", fontSize);
-    }
-  }
-
-  private m_fontColor = "#ffffff";
-  public get fontColor(): string {
-    return this.m_fontColor;
-  }
-
-  public set fontColor(fontColor: string) {
-    if (this.m_fontColor !== fontColor) {
-      this.m_fontColor = fontColor;
-      this.triggerPropertyChange("fontColor", fontColor);
-    }
-  }
-
-  private m_textOpacity: number | undefined;
-  public get textOpacity(): number {
-    return this.m_textOpacity as number;
-  }
-
-  public set textOpacity(textOpacity: number) {
-    if (this.m_textOpacity !== textOpacity) {
-      this.m_textOpacity = textOpacity;
-      this.triggerPropertyChange("textOpacity", textOpacity);
-    }
-  }
-
-  public textOpacityText: string | undefined;
-
-  public propertyChange: Function | undefined;
-
-  public triggerPropertyChange(propertyName: string, propertyValue: Object): void {
-        if (!isNullOrUndefined(this.propertyChange as any)) {
-            (this.propertyChange as any).call(this, { propertyName: propertyName, propertyValue: propertyValue });
-        }
-    }
-}
-
-export class OrgDataSettings {
-  public dataSourceColumns: { [key: string]: Object }[] = [];
-  public id = "";
-  public parent = "";
-  public nameField = "";
-  public bindingFields: string[] = [];
-  public imageField = "";
-  public additionalFields: string[] = [];
-  public fileformat = "";
-  public extensionType = ".csv";
-  public buttonContent = "Download Example CSV";
-}
-export class OrgChartData {
-  private selectedItem: SelectorViewModel
-
-  constructor(selectedItem: SelectorViewModel) {
-      this.selectedItem = selectedItem;
-  }
-  
-}
-export abstract class OrgChartUtilityMethods {
-
-  public static fileType: string;
-  public static uploadDialog: DialogComponent;
-  public static customPropertyDialog: DialogComponent | undefined;
-  public static isUploadSuccess: boolean;
-
-  public static selectedItem: SelectorViewModel;
-
-  public static columnsList: string[] = [];
-
-  public static orgDataSource: Object[] = [];
-
-  public static orgChart: OrgChartData;
-
-
- 
-
-
-  public static convertCsvToJson(csvText: string): Object[] {
-      let allTextLines: string[] = csvText.split(/\r\n|\n/);
-      this.columnsList = allTextLines[0].split(',');
-      let lines: Object[] = [];
-      for (let i: number = 1; i < allTextLines.length; i++) {
-          if (allTextLines[i]) {
-              let data: string[] = allTextLines[i].split(',');
-              //if (data.length === headers.length) {
-              let tarr: { [key: string]: Object } = {};
-              for (let j: number = 0; j < this.columnsList.length; j++) {
-                  if (data[j].trim().startsWith('"') && !data[j].trim().endsWith('"')) {
-                      while (!data[j].trim().endsWith('"')) {
-                          data[j] = data[j] + ',' + data[j + 1];
-                          data.splice(j + 1, 1);
-                      }
-                  }
-                  tarr[this.columnsList[j]] = data[j];
-              }
-              lines.push(tarr);
-              //}
-          }
-      }
-      return lines;
-  }
-
-  public static convertXmlToJson(element: Element): Object[] {
-      let dataSource: Object[] = [];
-      for (let i: number = 0; i < element.children.length; i++) {
-          let childElement: Element = element.children[i] as Element;
-          let rowData: { [key: string]: Object } = this.generateRowData(childElement, dataSource.length.toString());
-          if (Object.keys(rowData).length > 0) {
-              dataSource.push(rowData);
-          }
-          if (childElement.children.length > 0) {
-              let key: string = 'id';
-              this.convertChildXmlToJson(childElement, rowData[key].toString(), dataSource);
-          }
-      }
-      return dataSource;
-  }
-
-  public static convertChildXmlToJson(element: Element, parentId: string, dataSource: Object[]): void {
-      for (let i: number = 0; i < element.children.length; i++) {
-          let childElement: Element = element.children[i] as Element;
-          let rowData: { [key: string]: Object } =
-              this.generateRowData(childElement, dataSource.length.toString(), parentId.toString());
-          if (Object.keys(rowData).length > 0) {
-              dataSource.push(rowData);
-          }
-          if (childElement.children.length > 0) {
-              let key: string = 'id';
-              this.convertChildXmlToJson(childElement, rowData[key].toString(), dataSource);
-          }
-      }
-  }
-
-  public static generateRowData(element: Element, id: string, parentId?: string): { [key: string]: Object } {
-    let rowData: { [key: string]: Object } = {};
-    for (let i = 0; i < element.attributes.length; i++) {
-      let attr: Attr = element.attributes[i];
-          rowData[attr.name] = attr.value;
-          if (this.columnsList.indexOf(attr.name) === -1) {
-              this.columnsList.push(attr.name);
-          }
-      }
-      let key: string = 'id';
-      rowData[key] = id;
-      if (parentId) {
-          key = 'parentId';
-          rowData[key] = parentId;
-      }
-      return rowData;
-  }
-
-  public static shortCutkeys: { [key: string]: Object }[] = [
-      { 'key': 'Tab', 'value': 'Add a child to parent' },
-      { 'key': 'Enter', 'value': 'Add a child to same level' },
-      { 'key': 'Shift + Tab', 'value': 'Move the child parent to next level' },
-      { 'key': 'Delete', 'value': 'Delete a child' },
-      { 'key': 'Spacebar', 'value': 'Expand/Collapse a shape' },
-      { 'key': 'F2', 'value': 'Edit a shape' },
-      { 'key': 'Esc', 'value': 'End Editing' },
-      { 'key': 'Arrow(Up, Down, Left, Right)', 'value': 'Navigate between child' },
-  ];
-}
-
 export class SelectorViewModel {
   
   public diagram:Diagram;
@@ -856,8 +603,6 @@ export class SelectorViewModel {
   public printSettings: PrintSettings = new PrintSettings();
   public pageSettings: PageSettings = new PageSettings();
   public utilityMethods: UtilityMethods = new UtilityMethods();
-  public mindmapSettings: MindMapSettings = new MindMapSettings();
-  public orgDataSettings: OrgDataSettings = new OrgDataSettings();
   public scrollSettings: ScrollSettings = new ScrollSettings();
 
 
@@ -875,6 +620,7 @@ export class SelectorViewModel {
     this.textProperties.propertyChange = this.textPropertyChange.bind(this);
   }
 
+  // Handles node property changes.
   public nodePropertyChange(args: { [key: string]: Object }): void {
     if (!this.preventPropertyChange) {
       let diagram: Diagram = this.diagram as Diagram;
@@ -886,16 +632,16 @@ export class SelectorViewModel {
             let propertyName1: string = args.propertyName.toString().toLowerCase();
             switch (propertyName1) {
               case "offsetx":
-                node.offsetX = (document.getElementById("nodeOffsetX") as any).ej2_instances[0].value;
+                node.offsetX = this.nodeProperties.offsetX;
                 break;
               case "offsety":
-                node.offsetY = (document.getElementById("nodeOffsetY") as any).ej2_instances[0].value;
+                node.offsetY = this.nodeProperties.offsetY;
                 break;
               case "width":
-                node.width = (document.getElementById("nodeWidth") as any).ej2_instances[0].value;
+                node.width = this.nodeProperties.width;
                 break;
               case "height":
-                node.height = (document.getElementById("nodeHeight") as any).ej2_instances[0].value;
+                node.height = this.nodeProperties.height;
                 break;
               case "rotateangle":
                 node.rotateAngle = this.nodeProperties.rotateAngle;
@@ -939,6 +685,7 @@ export class SelectorViewModel {
         }
     }
 
+    // Applies node style changes
     private applyNodeStyle(propertyName: string, node: Node): void {
         let addInfo: any = node.addInfo || {};
         switch (propertyName) {
@@ -971,6 +718,7 @@ export class SelectorViewModel {
         }
     }
 
+    // Handles connector property changes
     public connectorPropertyChange(args: { [key: string]: Object }): void {
         if (!this.preventPropertyChange) {
             let diagram: Diagram | undefined = this.diagram;
@@ -1029,7 +777,8 @@ export class SelectorViewModel {
             }
         }
     }
-
+  
+  // Handles text property changes
   public textPropertyChange(args: { [key: string]: Object }): void {
     if (!this.preventPropertyChange) {
       let diagram: Diagram | undefined = this.diagram;
@@ -1058,6 +807,7 @@ export class SelectorViewModel {
   }
 }
 
+  // Updates text properties
   public updateTextProperties(propertyName: string, annotation: TextStyleModel): void {
     switch (propertyName) {
       case "fontfamily":
@@ -1076,7 +826,7 @@ export class SelectorViewModel {
     }
   }
 
-    
+  // Gets color value
   public getColor(colorName: string): string {
     if ((window.navigator as any).msSaveBlob && colorName.length === 9) {
       return colorName.substring(0, 7);

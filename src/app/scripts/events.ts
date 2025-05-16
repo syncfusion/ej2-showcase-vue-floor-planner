@@ -1,22 +1,15 @@
 import { SelectorViewModel } from "./selector";
 import {
     IDraggingEventArgs, ISizeChangeEventArgs, IRotationEventArgs,
-    ISelectionChangeEventArgs, IDragEnterEventArgs, Diagram, Node, Connector, NodeModel,
+    ISelectionChangeEventArgs, IDragEnterEventArgs, Diagram, Node, Connector,
     ShapeAnnotationModel, TextAlign, HorizontalAlignment, VerticalAlignment, IHistoryChangeArgs, TextStyleModel,
-    PathAnnotationModel, ShapeAnnotation, PathAnnotation, AnnotationAlignment, SelectorModel,
-    DiagramBeforeMenuOpenEventArgs, IScrollChangeEventArgs, DiagramMenuEventArgs, ITextEditEventArgs,IKeyEventArgs,
-    DiagramAction,
-    ContextMenuItemModel
+    PathAnnotationModel, ShapeAnnotation, PathAnnotation, AnnotationAlignment, SelectorModel, ContextMenuItemModel
 } from "@syncfusion/ej2-diagrams";
-import { ChangeEventArgs as DropDownChangeEventArgs, MultiSelectChangeEventArgs } from "@syncfusion/ej2-dropdowns";
+import { ChangeEventArgs as DropDownChangeEventArgs } from "@syncfusion/ej2-dropdowns";
 import { ChangeEventArgs as NumericChangeEventArgs, ColorPickerEventArgs } from "@syncfusion/ej2-inputs";
-import { ChangeEventArgs as CheckBoxChangeEventArgs, ChangeArgs as ButtonChangeArgs } from "@syncfusion/ej2-buttons";
-import { ClickEventArgs as ToolbarClickEventArgs, MenuEventArgs } from "@syncfusion/ej2-navigations";
-
-import { TooltipEventArgs } from "@syncfusion/ej2-popups";
-
+import { ChangeEventArgs as CheckBoxChangeEventArgs  } from "@syncfusion/ej2-buttons";
+import { ClickEventArgs as ToolbarClickEventArgs } from "@syncfusion/ej2-navigations";
 import { DropDownListComponent } from "@syncfusion/ej2-vue-dropdowns";
-import { PaperSize } from "./utilitymethods";
 import { DiagramComponent } from "@syncfusion/ej2-vue-diagrams";
 import { ToolbarComponent } from "@syncfusion/ej2-vue-navigations";
 
@@ -27,14 +20,11 @@ export class DiagramClientSideEvents {
     public ddlTextPosition: DropDownListComponent ;
     constructor(selectedItem: SelectorViewModel) {
         this.selectedItem = selectedItem;
-        
     }
 
-    public selectionChange(args: ISelectionChangeEventArgs): void {
-        let diagram: Diagram = (this.selectedItem as any).diagram;
-        let toolbarinstance: any = (document.getElementById("toolbarEditor") as any).ej2_instances[0];
-        let toolbarEditor :any =toolbarinstance;
-
+    // Handles changes in the selection of diagram items, updating toolbar and UI
+    public selectionChange(args: ISelectionChangeEventArgs): void { 
+        let toolbarEditor: any = (document.getElementById("toolbarEditor") as any).ej2_instances[0];
         if (this.selectedItem.preventSelectionChange || this.selectedItem.isLoading) {
             return;
         }
@@ -48,8 +38,7 @@ export class DiagramClientSideEvents {
                 if (selectedItems.length > 1) {
                     this.multipleSelectionSettings(selectedItems);
                     (toolbarEditor as any).items[7].tooltipText = 'Group';
-                    (toolbarEditor as any).items[7].prefixIcon = 'sf-icon-group';
-                        // toolbarEditor.items[7].template = '';
+                    (toolbarEditor as any).items[7].prefixIcon = 'sf-icon-group'; 
                     for(var i =7;i<=28;i++){
                         (toolbarEditor as any).items[i].visible = true;
                     } 
@@ -79,7 +68,8 @@ export class DiagramClientSideEvents {
                 }
         }
     }
-
+    
+    // Configures UI for multiple selected diagram items, showing appropriate panels
     private multipleSelectionSettings(selectedItems: Object[]): void {
         this.selectedItem.utilityMethods.objectTypeChange("None");
         let showConnectorPanel: boolean = false, showNodePanel: boolean = false;
@@ -117,16 +107,16 @@ export class DiagramClientSideEvents {
                 (document.getElementById("textPositionDiv") as any).style.display = "";
                 (document.getElementById("textColorDiv") as any).className = "col-xs-6 db-col-right";
                 if (showConTextPanel) {
-                    (this.ddlTextPosition as any).dataSource = this.selectedItem.textProperties.getConnectorTextPositions();
-                    //this.selectedItem.utilityMethods.bindTextProperties(selectItem1.connectors[0].annotations[0].style, this.selectedItem);
+                    (this.ddlTextPosition as any).dataSource = this.selectedItem.textProperties.getConnectorTextPositions(); 
                 } else {
-                    (this.ddlTextPosition as any).dataSource = this.selectedItem.textProperties.getNodeTextPositions();
-                    //this.selectedItem.utilityMethods.bindTextProperties(selectItem1.connectors[0].annotations[0].style, this.selectedItem);
+                    (this.ddlTextPosition as any).dataSource = this.selectedItem.textProperties.getNodeTextPositions(); 
                 }
                 (this.ddlTextPosition as any).dataBind();
             }
         }
     }
+
+    // Configures toolbar for scenarios where multiple items are selected
     public multipleSelection(): void
     {
       for(let i=8;i<33;i++)
@@ -142,6 +132,8 @@ export class DiagramClientSideEvents {
           }
       }
     }
+
+     // Sets properties for a single selected diagram item, handling nodes and connectors.
     private singleSelectionSettings(selectedObject: Object): void {
         let object: Node | Connector  = undefined as unknown as Node;
         if (selectedObject instanceof Node) {
@@ -184,10 +176,13 @@ export class DiagramClientSideEvents {
             }
         }
     }
+
     public created(){
         let diagram: Diagram = (document.getElementById("diagram") as any).ej2_instances[0];
         diagram.fitToPage({ mode: 'Page', region: 'Content' });
     }
+
+    // Updates node properties when its position changes in the diagram
     public nodePositionChange(args: IDraggingEventArgs): void {
         this.selectedItem.preventPropertyChange = true;
         this.selectedItem.nodeProperties.offsetX = (Math.round((args as any).newValue.offsetX * 100) / 100);
@@ -198,6 +193,7 @@ export class DiagramClientSideEvents {
         }
     }
 
+     // Updates node properties when its size changes in the diagram
     public nodeSizeChange(args: ISizeChangeEventArgs): void {
         this.selectedItem.preventPropertyChange = true;
         this.selectedItem.nodeProperties.width = (Math.round((args as any).newValue.width * 100) / 100);
@@ -208,16 +204,7 @@ export class DiagramClientSideEvents {
         }
     }
 
-    public textEdit(args: ITextEditEventArgs): void {
-        if (this.selectedItem.diagramType === "MindMap") {
-            let context: any = this;
-            setTimeout(() => { context.selectedItem.selectedDiagram.doLayout(); }, 10);
-        }
-        this.selectedItem.isModified = true;
-    };
-
-   
-
+    // Updates node properties when its rotation angle changes in the diagram
     public nodeRotationChange(args: IRotationEventArgs): void {
         this.selectedItem.preventPropertyChange = true;
         this.selectedItem.nodeProperties.rotateAngle = (Math.round((args as any).newValue.rotateAngle * 100) / 100);
@@ -226,48 +213,49 @@ export class DiagramClientSideEvents {
             this.selectedItem.isModified = true;
         }
     }
+
+    // Marks the diagram as modified when the selection changes
     public collectionChange(args: ISelectionChangeEventArgs): void {
         if (args.state === 'Changed') {
             this.selectedItem.isModified = true;
         }
     }
 
-    public dragEnter(args: IDragEnterEventArgs): void {
-        let obj: NodeModel = args.element as NodeModel;
-        
-        if((args.element as any).id.indexOf('Door close')!== -1 )
+    // Adjusts size parameters of elements when they are dragged into the diagram
+    public dragEnter(args: IDragEnterEventArgs): void { 
+        if((args.element as any).id.indexOf('Doorclose')!== -1 )
         {
             (args.element as any).width = 40;
             (args.element as any).height = 42;
         }
-        else if((args.element as any).id.indexOf('Double door close')!== -1 ){
+        else if((args.element as any).id.indexOf('Doubledoorclose')!== -1 ){
             (args.element as any).width = 80;
             (args.element as any).height = 42;
         }
-        else if((args.element as any).id.indexOf('Circle Dining Table')!== -1){
+        else if((args.element as any).id.indexOf('CircleDiningTable')!== -1){
             (args.element as any).width = 50;
             (args.element as any).height = 50;
         }
-        else if((args.element as any).id.indexOf('Circle Study Table')!== -1  || (args.element as any).id.indexOf('Circle Study Table1')!== -1 || (args.element as any).id.indexOf('Circle Study Table2')!== -1 ||(args.element as any).id.indexOf('Circle Study Table3')!== -1 )
+        else if((args.element as any).id.indexOf('CircleStudyTable')!== -1  || (args.element as any).id.indexOf('CircleStudyTable1')!== -1 || (args.element as any).id.indexOf('CircleStudyTable2')!== -1 ||(args.element as any).id.indexOf('CircleStudyTable3')!== -1 )
         {
             (args.element as any).width = 40;
             (args.element as any).height =40;
         }
-        else if((args.element as any).id.indexOf('Rectangle Dining Table')!== -1 ){
+        else if((args.element as any).id.indexOf('RectangleDiningTable')!== -1 ){
             (args.element as any).width = 50;
             (args.element as any).height = 50;
         }
-        else if((args.element as any).id.indexOf('Oblong Dining Table')!== -1 || (args.element as any).id.indexOf('Oval Dining Table')!== -1)
+        else if((args.element as any).id.indexOf('OblongDiningTable')!== -1 || (args.element as any).id.indexOf('OvalDiningTable')!== -1)
         {
             (args.element as any).width = 90;
             (args.element as any).height = 50;
         }
-        else if((args.element as any).id.indexOf('Rectangular Table for Two')!== -1 || (args.element as any).id.indexOf('Circular Table for Two')!== -1)
+        else if((args.element as any).id.indexOf('RectangularTableforTwo')!== -1 || (args.element as any).id.indexOf('CircularTableforTwo')!== -1)
         {
             (args.element as any).width = 50;
             (args.element as any).height = 60;
         }
-        else if((args.element as any).id.indexOf('Rectangle Study Table')!== -1 || (args.element as any).id.indexOf('Rectangle Study Table1')!== -1 )
+        else if((args.element as any).id.indexOf('RectangleStudyTable')!== -1 || (args.element as any).id.indexOf('RectangleStudyTable1')!== -1 )
         {
             (args.element as any).width = 80;
             (args.element as any).height = 40;
@@ -281,11 +269,11 @@ export class DiagramClientSideEvents {
             (args.element as any).width = 23;
             (args.element as any).height = 23;
         }
-        else if( (args.element as any).id.indexOf('Wall Corner')!== -1  || (args.element as any).id.indexOf('Wall Corner1')!== -1 ){
+        else if( (args.element as any).id.indexOf('WallCorner')!== -1  || (args.element as any).id.indexOf('WallCorner1')!== -1 ){
             (args.element as any).width = 50;
             (args.element as any).height = 50;
         }
-        else if((args.element as any).id.indexOf('Water Cooler')!== -1 || (args.element as any).id.indexOf('Elevator')!== -1 )
+        else if((args.element as any).id.indexOf('WaterCooler')!== -1 || (args.element as any).id.indexOf('Elevator')!== -1 )
         {
             (args.element as any).width = 40;
             (args.element as any).height = 40;
@@ -294,22 +282,22 @@ export class DiagramClientSideEvents {
             (args.element as any).width = 25;
             (args.element as any).height = 25;
         }
-        else if((args.element as any).id.indexOf('Chair')!== -1 ||(args.element as any).id.indexOf('Large Plant')!== -1 )
+        else if((args.element as any).id.indexOf('Chair')!== -1 ||(args.element as any).id.indexOf('LargePlant')!== -1 )
         {
             (args.element as any).width = 28;
             (args.element as any).height =32;
         }
-        else if((args.element as any).id.indexOf('Double bed')!== -1 || (args.element as any).id.indexOf('Double bed1')!== -1)
+        else if((args.element as any).id.indexOf('Doublebed')!== -1 || (args.element as any).id.indexOf('Doublebed1')!== -1)
         {
             (args.element as any).width = 100;
             (args.element as any).height =90;
         }
-        else if((args.element as any).id.indexOf('Single bed')!== -1 || (args.element as any).id.indexOf('Single bed1')!== -1)
+        else if((args.element as any).id.indexOf('Singlebed')!== -1 || (args.element as any).id.indexOf('Singlebed1')!== -1)
         {
             (args.element as any).width = 50;
             (args.element as any).height = 90;
         }
-        else if((args.element as any).id.indexOf('Book Case')!== -1 )
+        else if((args.element as any).id.indexOf('BookCase')!== -1 )
         {
             (args.element as any).width = 60;
             (args.element as any).height =20;
@@ -318,7 +306,7 @@ export class DiagramClientSideEvents {
             (args.element as any).width = 73;
             (args.element as any).height = 35;
         }
-        else if((args.element as any).id.indexOf('Small Plant')!== -1 ||(args.element as any).id.indexOf('Lamp light')!== -1)
+        else if((args.element as any).id.indexOf('SmallPlant')!== -1 ||(args.element as any).id.indexOf('Lamplight')!== -1)
         {
             (args.element as any).width = 25;
             (args.element as any).height =25;
@@ -328,7 +316,7 @@ export class DiagramClientSideEvents {
             (args.element as any).width = 40;
             (args.element as any).height =20;
         }
-        else if((args.element as any).id.indexOf('Flat TV')!== -1 || (args.element as any).id.indexOf('Flat TV1')!== -1)
+        else if((args.element as any).id.indexOf('FlatTV')!== -1 || (args.element as any).id.indexOf('FlatTV1')!== -1)
         {
             (args.element as any).width = 68;
             (args.element as any).height =10;
@@ -338,26 +326,26 @@ export class DiagramClientSideEvents {
             (args.element as any).width = 40;
             (args.element as any).height =25;
         }
-        else if((args.element as any).id.indexOf('Single Sofa')!== -1|| (args.element as any).id.indexOf('Couch')!== -1 )
+        else if((args.element as any).id.indexOf('SingleSofa')!== -1|| (args.element as any).id.indexOf('Couch')!== -1 )
         {
             (args.element as any).width = 45;
             (args.element as any).height = 40;
         }
-        else if((args.element as any).id.indexOf('Sofa')!== -1 || (args.element as any).id.indexOf('Double Sofa')!== -1 ||(args.element as any).id.indexOf('Lounge')!== -1)
+        else if((args.element as any).id.indexOf('Sofa')!== -1 || (args.element as any).id.indexOf('DoubleSofa')!== -1 ||(args.element as any).id.indexOf('Lounge')!== -1)
         {
             (args.element as any).width = 100;
             (args.element as any).height =35;
         }
-        else if((args.element as any).id.indexOf('Window Garden')!== -1 )
+        else if((args.element as any).id.indexOf('WindowGarden')!== -1 )
         {
             (args.element as any).width = 80;
             (args.element as any).height = 18;
         }
-        else if((args.element as any).id.indexOf('Small Gas Range')!== -1){
+        else if((args.element as any).id.indexOf('SmallGasRange')!== -1){
             (args.element as any).width = 70;
             (args.element as any).height = 32;
         }
-        else if((args.element as any).id.indexOf('Large Gas Range')!== -1 || (args.element as any).id.indexOf('Large Gas Range1')!== -1){
+        else if((args.element as any).id.indexOf('LargeGasRange')!== -1 || (args.element as any).id.indexOf('LargeGasRange1')!== -1){
             (args.element as any).width = 100;
             (args.element as any).height = 32;
         }
@@ -381,12 +369,12 @@ export class DiagramClientSideEvents {
             (args.element as any).width = 30;
             (args.element as any).height =30;
         }
-        else if( (args.element as any).id.indexOf('Room')!== -1 || (args.element as any).id.indexOf('T Room')!== -1 ||(args.element as any).id.indexOf('L Room')!== -1  || (args.element as any).id.indexOf('T Wall')!== -1 )
+        else if( (args.element as any).id.indexOf('Room')!== -1 || (args.element as any).id.indexOf('TRoom')!== -1 ||(args.element as any).id.indexOf('LRoom')!== -1  || (args.element as any).id.indexOf('TWall')!== -1 )
         {
             (args.element as any).width = 100;
             (args.element as any).height =100;
         }
-        else if((args.element as any).id.indexOf('Double Sink')!== -1 || (args.element as any).id.indexOf('Double Sink1')!== -1|| (args.element as any).id.indexOf('Double Sink2')!== -1|| (args.element as any).id.indexOf('Double Sink4')!== -1  ){
+        else if((args.element as any).id.indexOf('DoubleSink')!== -1 || (args.element as any).id.indexOf('DoubleSink1')!== -1|| (args.element as any).id.indexOf('DoubleSink2')!== -1|| (args.element as any).id.indexOf('DoubleSink4')!== -1  ){
             (args.element as any).width = 76;
             (args.element as any).height =38;
         } 
@@ -395,15 +383,15 @@ export class DiagramClientSideEvents {
             (args.element as any).width = 23;
             (args.element as any).height =36;
         }
-        else if((args.element as any).id.indexOf('Corner Shower')!== -1  ||(args.element as any).id.indexOf('Shower')!== -1 ){
+        else if((args.element as any).id.indexOf('CornerShower')!== -1  ||(args.element as any).id.indexOf('Shower')!== -1 ){
             (args.element as any).width = 50;
             (args.element as any).height = 50;
         }
-        else if((args.element as any).id.indexOf('Wash Basin1')!== -1 || (args.element as any).id.indexOf('Wash Basin2')!== -1 || (args.element as any).id.indexOf('Wash Basin3')!== -1 || (args.element as any).id.indexOf('Wash Basin5')!== -1 || (args.element as any).id.indexOf('Wash Basin6')!== -1){
+        else if((args.element as any).id.indexOf('WashBasin1')!== -1 || (args.element as any).id.indexOf('WashBasin2')!== -1 || (args.element as any).id.indexOf('WashBasin3')!== -1 || (args.element as any).id.indexOf('WashBasin5')!== -1 || (args.element as any).id.indexOf('WashBasin6')!== -1){
             (args.element as any).width = 35;
             (args.element as any).height = 30;
         }
-        else if( (args.element as any).id.indexOf('Bath Tub')!== -1 ||(args.element as any).id.indexOf('Bath Tub1')!== -1 ||(args.element as any).id.indexOf('Bath Tub2')!== -1  || (args.element as any).id.indexOf('Bath Tub3')!== -1  )
+        else if( (args.element as any).id.indexOf('BathTub')!== -1 ||(args.element as any).id.indexOf('BathTub1')!== -1 ||(args.element as any).id.indexOf('BathTub2')!== -1  || (args.element as any).id.indexOf('BathTub3')!== -1  )
         {
             (args.element as any).width = 55;
             (args.element as any).height =30;
@@ -416,6 +404,7 @@ export class DiagramClientSideEvents {
         
     }
 
+    // Updates toolbar state based on the availability of undo and redo actions
     public historyChange(args: IHistoryChangeArgs): void {
         let diagram: Diagram = (this.selectedItem as any).diagram;
         let toolbarContainer: HTMLDivElement = document.getElementsByClassName("db-toolbar-container")[0] as HTMLDivElement;
@@ -428,14 +417,6 @@ export class DiagramClientSideEvents {
             toolbarContainer.classList.add("db-redo");
         }
     }
-    public keyDown(args: IKeyEventArgs) {
-        if(this.selectedItem.diagramType === 'MindMap') {
-            let diagram: Diagram = this.selectedItem.diagram;
-            if (args.key === "Enter" && args.keyModifiers === 0 && (diagram.diagramActions & DiagramAction.TextEdit)) {
-                diagram.endEdit();
-            }
-        }
-    }
 }
 
 export class DiagramPropertyBinding {
@@ -444,10 +425,9 @@ export class DiagramPropertyBinding {
     public ddlTextPosition: DropDownListComponent;
     constructor(selectedItem: SelectorViewModel, ) {
         this.selectedItem = selectedItem;
-       
-
     }
 
+    // Updates page break settings and icons in response to checkbox changes
     public pageBreaksChange(args: CheckBoxChangeEventArgs): void {
         let items = ((document.getElementById("btnViewMenu") as any).ej2_instances[0]).items;
         if (args.event) {
@@ -463,6 +443,7 @@ export class DiagramPropertyBinding {
         }
     }
 
+    // Adjusts diagram page settings based on selected paper size
     public paperListChange(args:any){
         let diagram =this.selectedItem.diagram;
         (document.getElementById('pageDimension') as any).style.display ='none';
@@ -501,6 +482,8 @@ export class DiagramPropertyBinding {
         this.updatePaperSelection(arrangeContextMenu.items[1],value);
         diagram.dataBind();
     };
+
+    // Updates the selection icon in the menu for paper sizes
     public updatePaperSelection(items:ContextMenuItemModel,value:any){
         for(let i:number=0;i<(items as any).items.length;i++)
         {
@@ -512,6 +495,8 @@ export class DiagramPropertyBinding {
          }
         }
     }
+
+    // Modifies the page dimensions based on user input values
     public pageDimensionChange(args: NumericChangeEventArgs): void {
         if (args.event) {
             let pageWidth: number = Number(this.selectedItem.pageSettings.pageWidth);
@@ -543,6 +528,7 @@ export class DiagramPropertyBinding {
         }
     }
 
+    // Changes page orientation between portrait and landscape
     public pageOrientationChange(args: any): void {
         if (args.target) {
             var target = args.target;
@@ -552,16 +538,12 @@ export class DiagramPropertyBinding {
             var option = target.id ? target.id : (args.currentTarget.ej2_instances[0].iconCss === 'sf-icon-portrait'? 'pagePortrait':'pageLandscape');  
             switch (option) {
                 case 'pagePortrait':
-                    // diagram.pageSettings.isPortrait = true;
-                    // diagram.pageSettings.isLandscape = false;
                     diagram.pageSettings.orientation = 'Portrait';
                     items[0].items[0].iconCss = '';
                     items[0].items[1].iconCss = 'sf-icon-check-tick';
                     (document.getElementById('pageLandscape') as any).classList.remove('e-active');
                     break;
                 case 'pageLandscape':
-                    // diagram.pageSettings.isPortrait = false;
-                    // diagram.pageSettings.isLandscape = true;
                     diagram.pageSettings.orientation = 'Landscape';
                     items[0].items[0].iconCss = 'sf-icon-check-tick';
                     items[0].items[1].iconCss = '';
@@ -572,10 +554,10 @@ export class DiagramPropertyBinding {
         }
     };
 
+    // Changes the background color of the diagram page
     public pageBackgroundChange1(args: ColorPickerEventArgs): void {
         if (args.currentValue) {
-            // let target: HTMLInputElement = args.target as HTMLInputElement; 
-            let diagram: Diagram = this.selectedItem.diagram as Diagram;
+           let diagram: Diagram = this.selectedItem.diagram as Diagram;
             diagram.pageSettings.background = {
                 color: args.currentValue.rgba
             };
@@ -583,26 +565,31 @@ export class DiagramPropertyBinding {
         }
     }
 
+    // Updates text position properties based on dropdown selection
     public textPositionChange(args: DropDownChangeEventArgs): void {
         if (args.value !== null) {
             this.textPropertyChange("textPosition", args.value);
         }
     }
 
+    // Handles changes in text style (bold, italic) from toolbar interactions
     public toolbarTextStyleChange(args: ToolbarClickEventArgs): void {
         this.textPropertyChange((args as any).item.tooltipText, false);
     }
 
+    // Updates text sub-alignment properties from toolbar settings
     public toolbarTextSubAlignChange(args: ToolbarClickEventArgs): void {
         let propertyName: string = (args as any).item.tooltipText.replace(/[" "]/g, "");
         this.textPropertyChange(propertyName, propertyName);
     }
 
+    // Sets text alignment properties from toolbar settings
     public toolbarTextAlignChange(args: ToolbarClickEventArgs): void {
         let propertyName: string = (args as any).item.tooltipText.replace("Align ", "");
         this.textPropertyChange(propertyName, propertyName);
     }
 
+    // Applies specified text properties to the selected diagram annotations
     public textPropertyChange(propertyName: string, propertyValue: Object): void {
             if (!this.selectedItem.preventPropertyChange) {
             let diagram: Diagram = this.selectedItem.diagram as Diagram;
@@ -652,7 +639,8 @@ export class DiagramPropertyBinding {
             }
         }
      }
-
+    
+    // Modifies text properties like bold, italic, and alignment for an annotation
     public updateTextProperties(propertyName: string, propertyValue: Object, annotation: TextStyleModel): void {
         switch (propertyName) {
             case "bold":
@@ -677,6 +665,7 @@ export class DiagramPropertyBinding {
         }
     }
 
+    // Updates the visual state of toolbar items based on text property changes
     private updateToolbarState(toolbarName: string, isSelected: boolean, index: number) {
         let toolbarTextStyle: any = document.getElementById(toolbarName);
         if (toolbarTextStyle) {
@@ -689,5 +678,3 @@ export class DiagramPropertyBinding {
         }
     }
 }
-
-
